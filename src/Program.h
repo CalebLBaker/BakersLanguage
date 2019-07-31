@@ -2,6 +2,7 @@
 #define PROGRAM_H
 
 #include <vector>
+#include <unordered_map>
 #include "FunctionDeclaration.h"
 #include "TypeDefinition.h"
 
@@ -9,25 +10,29 @@
 class Program : SyntaxNode {
 
 public:
+
 	// functions is a list of all functions in the global namespace
 	std::vector<FunctionDeclaration> functions;
+
+	// types maps type names to type definitions for types declared in the global namespace
+	std::unordered_map<std::string, TypeDefinition> types;
+
+	// Program constructs a Program object that includes the type definitions for built-in types
+	Program();
 
 	/**
 	 * parse parses the program
 	 * param scanner: the scanner to parse tokens from
 	 * returns:       an error object indicating any syntax error that may have occurred
 	 */
-	Error parse(Scanner *scanner) {
-		location = scanner->next_token.location;
-		while (scanner->next_token.type != END_OF_FILE) {
-			functions.push_back(FunctionDeclaration());
-			Error error = functions.back().parse(scanner);
-			if (!error.ok()) {
-				return error;
-			}
-		}
-		return Error();
-	}
+	Error parse(Scanner *scanner);
+
+	/**
+	 * doSemanticAnalysis performs semantic analysis on the program
+	 * returns: an error object indicating any semantic errors that may have occurred
+	 */
+	Error doSemanticAnalysis();
+
 };
 
 #endif

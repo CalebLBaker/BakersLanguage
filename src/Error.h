@@ -7,7 +7,8 @@
 enum ErrorType {
 	SUCCESS,
 	EXPECTED_IDENTIFIER,
-	UNEXPECTED_TOKEN
+	UNEXPECTED_TOKEN,
+	NO_SUCH_TYPE
 };
 
 // Error is used for returning errors

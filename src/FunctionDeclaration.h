@@ -23,25 +23,15 @@ public:
 	// body is the body of the function
 	CompoundStatement body;
 
-	Error parse(Scanner *scanner) {
-		location = scanner->next_token.location;
-		Error error = return_type.parse(scanner);
-		if (!error.ok()) {
-			return error;
-		}
-		Token next_token = scanner->getNextToken();
-		if (next_token.type == IDENTIFIER) {
-			name = std::move(*(next_token.value));
-		}
-		else {
-			return Error(EXPECTED_IDENTIFIER, std::move(next_token.location));
-		}
-		error = parameters.parse(scanner);
-		if (!error.ok()) {
-			return error;
-		}
-		return body.parse(scanner);
-	}
+	Error parse(Scanner *scanner);
+
+	/**
+	 * analyzeSignature checks for semantic errors in the function signature and connects Types
+	 * in the signature with their definitions
+	 * param program: the program that the function is in
+	 * returns: an error object indicating any semantic errors in the function signature
+	 */
+	Error analyzeSignature(const Program *program);
 
 };
 

@@ -4,6 +4,7 @@
 const int USAGE_ERROR = -1;
 const int IO_ERROR = -2;
 const int SYNTAX_ERROR = -3;
+const int SEMANTIC_ERROR = -4;
 
 /**
  * main compiles Baker's Language source code into an executable.
@@ -12,7 +13,11 @@ const int SYNTAX_ERROR = -3;
  *             output file. An argument that is not following a flag and is also not itself a flag
  *             will be used as the input file. If multiple input or output files are specified, the
  *             last one will be used.
- * returns:    0 on success; -1 on usage error; -2 on io error; -3 on syntax error
+ * returns:    0  : success
+ *             -1 : usage error
+ *             -2 : io error
+ *             -3 : syntax error
+ *             -4 : semantic error
  */
 int main(int argc, char **argv) {
 
@@ -50,11 +55,19 @@ int main(int argc, char **argv) {
 		return IO_ERROR;
 	}
 
+	// Scan and parse
 	Program ast;
 	Error err = ast.parse(&scanner);
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
 		return SYNTAX_ERROR;
+	}
+
+	// Semantic analysis
+	err = ast.doSemanticAnalysis();
+	if (!err.ok()) {
+		fprintf(stderr, "%s", err.toString().c_str());
+		return SEMANTIC_ERROR;
 	}
 
 	return 0;

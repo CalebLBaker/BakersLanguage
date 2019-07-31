@@ -3,8 +3,11 @@
 
 #include "SyntaxNode.h"
 #include "Scanner.h"
+#include "TypeDefinition.h"
 
-// Type represents a data type
+class Program;
+
+// Type represents a reference to a data type
 class Type : SyntaxNode {
 
 public:
@@ -12,22 +15,22 @@ public:
 	// name is the name of the type
 	std::string name;
 
+	// definition is a pointer to the definition for the type
+	const TypeDefinition *definition;
+
 	/**
 	 * parse populates the Type object by parsing Tokens from a Scanner
 	 * param scanner: the scanner to parse tokens from
 	 * returns:       an Error object indicating what, if anything, went wrong
 	 */
-	Error parse(Scanner *scanner) {
-		Token next_token = scanner->getNextToken();
-		location = next_token.location;
-		if (next_token.type == IDENTIFIER) {
-			name = std::move(*(next_token.value));
-			return Error();
-		}
-		else {
-			return Error(EXPECTED_IDENTIFIER, std::move(next_token.location));
-		}
-	}
+	Error parse(Scanner *scanner); 
+
+	/**
+	 * doSemanticAnalysis matches the type with the corresponding TypeDefinition
+	 * param program: the program that the type is in
+	 * returns: an error object indicating whether a definition was successfully found
+	 */
+	Error doSemanticAnalysis(const Program *program);
 	
 };
 
