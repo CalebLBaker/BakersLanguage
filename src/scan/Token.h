@@ -33,36 +33,26 @@ struct Token {
 	 * param loc:  The location of the token
 	 * param val:  The value of the token (if applicable)
 	 */
-	Token(TokenType t = ERROR, const Location *loc = nullptr, std::string&& val = "") : type(t),
-	         location(loc), value(new std::string(std::move(val))) {}
+	Token(TokenType t = ERROR, const Location *loc = nullptr, std::string&& val = "");
 
 	/**
 	 * Token copy constructs a Token.
 	 * param token: The Token to copy
 	 */
-	Token(const Token& token) : type(token.type), location(token.location) {
-		if (token.value != nullptr) {
-			value.reset(new std::string(*(token.value)));
-		}
-	}
+	Token(const Token& token);
 
 	/**
 	 * Token move constructs a Token.
 	 * param token: The Token to move
 	 */
-	Token(Token&& token) : type(token.type), location(std::move(token.location)),
-	                       value(std::move(token.value)) { }
+	Token(Token&& token);
 
 	/**
 	 * setValue sets the value field
 	 * param val: the value to set the value field to
 	 */
-	void setValue(const std::string& val) {
-		if (value == nullptr) {
-			value.reset(new std::string);
-		}
-		*value = val;
-	}
+	void setValue(const std::string& val);
+
 };
 
 #endif

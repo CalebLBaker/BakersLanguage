@@ -16,13 +16,13 @@ class Error {
 public:
 
 	// Error constructs an error object indicating success
-	Error() : location(), type(SUCCESS) {}
+	Error();
 
 	// Error constructs an error message from an ErrorType and a Location
-	Error(ErrorType t, Location&& loc) : location(std::move(loc)), type(t) {}
+	Error(ErrorType t, Location&& loc);
 
 	// Error constructs an error message from an ErrorType and a location
-	Error(ErrorType t, const Location& loc) : location(loc), type(t) {}
+	Error(ErrorType t, const Location& loc);
 
 	// location is the location where the error happened
 	Location location;
@@ -34,28 +34,14 @@ public:
 	 * ok indicates whether the operation in question was successful
 	 * returns: true if the operation in question was successful
 	 */
-	bool ok() const {
-		return type == SUCCESS;
-	}
+	bool ok() const;
 
 	/**
 	 * toString converts the error message into a string.
 	 * returns: the error message as a string
 	 */
-	std::string toString() const {
-		std::string ret = location.toString();
-		switch (type) {
-			case EXPECTED_IDENTIFIER: {
-				return ret + " error: Expected an identifier.\n";
-			}
-			case UNEXPECTED_TOKEN: {
-				return ret + " error: Unexpected token.\n";
-			}
-			default : {
-				return ret;
-			}
-		}
-	}
+	std::string toString() const;
+
 };
 
 #endif

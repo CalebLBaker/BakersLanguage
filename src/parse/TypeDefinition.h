@@ -28,7 +28,7 @@ public:
 	 * TypeDefinitions constructs a TypeDefinition
 	 * param k: the kind of type to define
 	 */
-	TypeDefinition(TypeKind k = VOID) : kind(k) {}
+	TypeDefinition(TypeKind k = VOID);
 };
 
 #endif

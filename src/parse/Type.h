@@ -2,7 +2,7 @@
 #define TYPE_H
 
 #include "SyntaxNode.h"
-#include "Scanner.h"
+#include "scan/Scanner.h"
 #include "TypeDefinition.h"
 
 class Program;

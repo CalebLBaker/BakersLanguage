@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "Program.h"
+#include "parse/Program.h"
 
 const int USAGE_ERROR = -1;
 const int IO_ERROR = -2;

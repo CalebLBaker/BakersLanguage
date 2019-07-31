@@ -2,7 +2,7 @@
 #define DECLARATION_H
 
 #include "SyntaxNode.h"
-#include "Scanner.h"
+#include "scan/Scanner.h"
 
 // Declaration represents a Declaration in the Abstract Syntax Tree
 class Declaration : public SyntaxNode {
