@@ -18,8 +18,8 @@ Program::Program() : SyntaxNode() {
 Error Program::parse(Scanner *scanner) {
 	location = scanner->next_token.location;
 	while (scanner->next_token.type != END_OF_FILE) {
-		functions.push_back(FunctionDeclaration());
-		Error error = functions.back().parse(scanner);
+		function_list.push_back(FunctionDeclaration());
+		Error error = function_list.back().parse(scanner);
 		if (!error.ok()) {
 			return error;
 		}
@@ -29,10 +29,13 @@ Error Program::parse(Scanner *scanner) {
 
 
 Error Program::doSemanticAnalysis() {
-	for (FunctionDeclaration& i : functions) {
+	for (FunctionDeclaration& i : function_list) {
 		Error err = i.analyzeSignature(this);
 		if (!err.ok()) {
 			return err;
+		}
+		if (!functions.emplace(i.name, &i).second) {
+			return Error(DUPLICATE_FUNCTION_SIGNATURE, i.location);
 		}
 	}
 	return Error();

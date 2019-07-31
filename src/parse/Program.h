@@ -12,10 +12,13 @@ class Program : SyntaxNode {
 public:
 
 	// functions is a list of all functions in the global namespace
-	std::vector<FunctionDeclaration> functions;
+	std::vector<FunctionDeclaration> function_list;
 
 	// types maps type names to type definitions for types declared in the global namespace
 	std::unordered_map<std::string, TypeDefinition> types;
+
+	// functions maps function names to function declarations
+	std::unordered_map<std::string, FunctionDeclaration*> functions;
 
 	// Program constructs a Program object that includes the type definitions for built-in types
 	Program();

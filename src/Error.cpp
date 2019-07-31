@@ -19,6 +19,9 @@ std::string Error::toString() const {
 		case UNEXPECTED_TOKEN: {
 			return ret + " error: Unexpected token.\n";
 		}
+		case DUPLICATE_FUNCTION_SIGNATURE: {
+			return ret + " error: Ambiguous function overload with same parameters.\n";
+		}
 		default : {
 			return ret;
 		}

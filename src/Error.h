@@ -8,7 +8,8 @@ enum ErrorType {
 	SUCCESS,
 	EXPECTED_IDENTIFIER,
 	UNEXPECTED_TOKEN,
-	NO_SUCH_TYPE
+	NO_SUCH_TYPE,
+	DUPLICATE_FUNCTION_SIGNATURE
 };
 
 // Error is used for returning errors
