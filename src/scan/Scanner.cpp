@@ -19,7 +19,7 @@ Token Scanner::getNextToken() {
 
 Error Scanner::matchNextToken(TokenType type) {
 	Error ret(SUCCESS, next_token.location);
-	if (next_token.type == type) {
+	if (next_token.type != type) {
 		ret.type = UNEXPECTED_TOKEN;
 	}
 	readNextToken();
