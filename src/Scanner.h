@@ -1,14 +1,20 @@
+#ifndef SCANNER_H
+#define SCANNER_H
+
 #include <cctype>
-#include "Symbol.h"
+#include "Token.h"
+#include "Error.h"
 
 // Scanner is a class that is used to tokenize a file.
 class Scanner {
+
+public:
 
 	/**
  	 * Scanner constructs a Scanner object that will get symbols from a specified file.
 	 * param infile_name: The name of the file that the Scanner will read symbols from
 	 */
-	Scanner(const char *infile_name) : location(std::string(infile_name, 1, 0)) {
+	Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
 		file = fopen(infile_name, "r");
 		readNextToken();
 	}
@@ -17,8 +23,22 @@ class Scanner {
 	 * getNextToken reads the next token from the file.
 	 * returns: the next token
 	 */
-	Symbol getNextToken() {
-		Symbol ret = next_symbol;
+	Token getNextToken() {
+		Token ret = next_token;
+		readNextToken();
+		return ret;
+	}
+
+	/** 
+	 * matchNextToken consumes the next token and checks if it is of a given type.
+	 * param type: the type to match the next token to
+	 * returns:    true if the next token matched the specified type
+	 */
+	Error matchNextToken(TokenType type) {
+		Error ret(SUCCESS, next_token.location);
+		if (next_token.type == type) {
+			ret.type = UNEXPECTED_TOKEN;
+		}
 		readNextToken();
 		return ret;
 	}
@@ -31,10 +51,15 @@ class Scanner {
 		return file != nullptr;
 	}
 
+	// next_symbol is the next symbol that will be returned by getNextToken
+	Token next_token;
+
 private:
+
 	FILE *file;
-	Symbol next_symbol;
 	Location location;
+
+	const static std::string NON_ID_CHARS;
 
 	void readNextToken() {
 		State state = START;
@@ -47,19 +72,27 @@ private:
 					switch (next_char) {
 						case '(': {
 							location.column_number++;
-							return Symbol(LEFT_PAREN, &location, "");
+							next_token.type = LEFT_PAREN;
+							next_token.location = location;
+							return;
 						}
 						case ')': {
 							location.column_number++;
-							return Symbol(RIGHT_PAREN, &location, "");
+							next_token.type = RIGHT_PAREN;
+							next_token.location = location;
+							return;
 						}
 						case '{': {
 							location.column_number++;
-							return Symbol(LEFT_BRACE, &location, "");
+							next_token.type = LEFT_BRACE;
+							next_token.location = location;
+							return;
 						}
 						case '}': {
 							location.column_number++;
-							return Symbol(RIGHT_BRACE, &location, "");
+							next_token.type = RIGHT_BRACE;
+							next_token.location = location;
+							return;
 						}
 						case '\n': {
 							location.column_number = 0;
@@ -71,7 +104,9 @@ private:
 							break;
 						}
 						case EOF: {
-							return Symbol(END_OF_FILE, &location, "");
+							next_token.type = END_OF_FILE;
+							next_token.location = location;
+							return;
 						}
 						default : {
 							location.column_number++;
@@ -85,9 +120,13 @@ private:
 					break;
 				}
 				case IN_IDENTIFIER: {
-					if (isspace(next_char) || NON_ID_CHARS.find(next_char) != std::string::npos) {
+					bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;
+					if (isspace(next_char) || new_token || next_char == EOF) {
 						ungetc(next_char, file);
-						return Symbol(IDENTIFIER, &loc, id);
+						next_token.type = IDENTIFIER;
+						next_token.location = loc;
+						next_token.setValue(id);
+						return;
 					}
 					else {
 						id += next_char;
@@ -98,8 +137,6 @@ private:
 		}
 	}
 
-	static const std::string NON_ID_CHARS = "(){}" + EOF;
-
 	enum State {
 		START,
 		IN_IDENTIFIER
@@ -107,3 +144,6 @@ private:
 
 };
 
+const std::string Scanner::NON_ID_CHARS = "(){}";
+
+#endif

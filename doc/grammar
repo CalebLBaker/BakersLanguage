@@ -1,0 +1,7 @@
+Program             -> { Declaration }
+Declaration         -> FunctionDeclaration
+FunctionDeclaration -> Type IDENTIFIER ParameterList CompoundStatement
+Type                -> IDENTIFIER
+ParameterList       -> ( )
+CompoundStatement   -> \{ \}
+

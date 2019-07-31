@@ -1,8 +1,9 @@
 #include <cstdio>
-#include "Scanner.h"
+#include "Program.h"
 
 const int USAGE_ERROR = -1;
 const int IO_ERROR = -2;
+const int SYNTAX_ERROR = -3;
 
 /**
  * main compiles Baker's Language source code into an executable.
@@ -11,7 +12,7 @@ const int IO_ERROR = -2;
  *             output file. An argument that is not following a flag and is also not itself a flag
  *             will be used as the input file. If multiple input or output files are specified, the
  *             last one will be used.
- * returns:    0 on success; -1 on usage error; -2 on io error
+ * returns:    0 on success; -1 on usage error; -2 on io error; -3 on syntax error
  */
 int main(int argc, char **argv) {
 
@@ -49,8 +50,13 @@ int main(int argc, char **argv) {
 		return IO_ERROR;
 	}
 
-	// Read all the symbols
-	// TODO: Do something with the symbols when they are read
-	while (scanner.getNextToken().type != END_OF_FILE);
+	Program ast;
+	Error err = ast.parse(&scanner);
+	if (!err.ok()) {
+		fprintf(stderr, "%s", err.toString().c_str());
+		return SYNTAX_ERROR;
+	}
+
+	return 0;
 
 }
