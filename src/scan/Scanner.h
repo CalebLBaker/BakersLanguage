@@ -35,6 +35,12 @@ public:
 	 */
 	bool isOpen() const;
 
+	/**
+	 * close closes the input file
+	 * returns: true if the file was closed succcessfully
+	 */
+	bool close();
+
 	// next_symbol is the next symbol that will be returned by getNextToken
 	Token next_token;
 

@@ -1,4 +1,5 @@
 #include "FunctionDeclaration.h"
+#include "codeGen/Function.h"
 
 
 Error FunctionDeclaration::parse(Scanner *scanner) {
@@ -24,5 +25,15 @@ Error FunctionDeclaration::parse(Scanner *scanner) {
 
 Error FunctionDeclaration::analyzeSignature(const Program *program) {
 	return return_type.doSemanticAnalysis(program);
+}
+
+
+Error FunctionDeclaration::genCode(Function *low_level_func) {
+	std::vector<BasicBlock> *blocks = &(low_level_func->blocks);
+	blocks->emplace_back(BasicBlock());
+	BasicBlock *block = &(blocks->back());
+	block->addInstruction(Instruction(&name));
+	block->addInstruction(Instruction(RETURN));
+	return Error();
 }
 

@@ -32,6 +32,11 @@ bool Scanner::isOpen() const {
 }
 
 
+bool Scanner::close() {
+	return fclose(file) == 0;
+}
+
+
 void Scanner::readNextToken() {
 	State state = START;
 	std::string id = "";

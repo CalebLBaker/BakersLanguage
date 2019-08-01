@@ -41,3 +41,26 @@ Error Program::doSemanticAnalysis() {
 	return Error();
 }
 
+
+Error Program::genCode() {
+	for (FunctionDeclaration& i : function_list) {
+		code.emplace_back(Function());
+		Error err = i.genCode(&(code.back()));
+		if (!err.ok()) {
+			return err;
+		}
+	}
+	return Error();
+}
+
+
+Error Program::printCode(FILE *file) const {
+	for (const Function& i : code) {
+		Error err = i.printCode(file);
+		if (!err.ok()) {
+			return err;
+		}
+	}
+	return Error();
+}
+

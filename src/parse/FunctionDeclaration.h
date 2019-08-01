@@ -5,6 +5,7 @@
 #include "Type.h"
 #include "ParameterList.h"
 #include "CompoundStatement.h"
+#include "codeGen/Function.h"
 
 // FunctionDeclaration represents a Function in the Abstract Syntax Tree
 class FunctionDeclaration : public Declaration {
@@ -32,6 +33,13 @@ public:
 	 * returns: an error object indicating any semantic errors in the function signature
 	 */
 	Error analyzeSignature(const Program *program);
+
+	/**
+	 * genCode generates intermediate low level code for the function
+	 * param low_level_func: the low level function code object to write to
+	 * returns: an error object indicating any errors that may have occurred
+	 */
+	Error genCode(Function *low_level_func);
 
 };
 

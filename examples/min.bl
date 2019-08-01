@@ -1,3 +1,15 @@
 void main() {
 }
 
+void anotherFun() {
+}
+
+void doNothing() {
+}
+
+void foo() {
+}
+
+void bar() {
+}
+

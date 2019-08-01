@@ -5,6 +5,7 @@ const int USAGE_ERROR = -1;
 const int IO_ERROR = -2;
 const int SYNTAX_ERROR = -3;
 const int SEMANTIC_ERROR = -4;
+const int CODE_GEN_ERROR = -5;
 
 /**
  * main compiles Baker's Language source code into an executable.
@@ -18,11 +19,12 @@ const int SEMANTIC_ERROR = -4;
  *             -2 : io error
  *             -3 : syntax error
  *             -4 : semantic error
+ *             -5 : code generation error
  */
 int main(int argc, char **argv) {
 
 	// Process command line arguments
-	const char *outfile_name = "out.bls";
+	const char *outfile_name = "out.s";
 	const char *infile_name = nullptr;
 	bool o_flag = false;
 	for (size_t i = 1; i < argc; i++) {
@@ -63,6 +65,11 @@ int main(int argc, char **argv) {
 		return SYNTAX_ERROR;
 	}
 
+	// Close input file
+	if (!scanner.close()) {
+		fprintf(stderr, "%s:0:0: warning: error closing file\n", infile_name);
+	}
+
 	// Semantic analysis
 	err = ast.doSemanticAnalysis();
 	if (!err.ok()) {
@@ -70,6 +77,32 @@ int main(int argc, char **argv) {
 		return SEMANTIC_ERROR;
 	}
 
-	return 0;
+	// Intermedate low level code generation
+	err = ast.genCode();
+	if (!err.ok()) {
+		fprintf(stderr, "%s", err.toString().c_str());
+		return CODE_GEN_ERROR;
+	}
 
+	// Open output file
+	FILE *outfile = fopen(outfile_name, "w");
+	if (outfile == nullptr) {
+		fprintf(stderr, "%s:0:0: error: cannot open file for writing\n", outfile_name);
+		return IO_ERROR;
+	}
+
+	// Write code to file
+	err = ast.printCode(outfile);
+	if (!err.ok()) {
+		fprintf(stderr, "%s", err.toString().c_str());
+		return CODE_GEN_ERROR;
+	}
+
+	// Close output file
+	if (fclose(outfile) != 0) {
+		fprintf(stderr, "%s:0:0: warning: error closing file\n", outfile_name);
+		return IO_ERROR;
+	}
+
+	return 0;
 }
