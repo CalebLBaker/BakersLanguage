@@ -29,6 +29,7 @@ Error Program::parse(Scanner *scanner) {
 
 
 Error Program::doSemanticAnalysis() {
+	bool found_main = false;
 	for (FunctionDeclaration& i : function_list) {
 		Error err = i.analyzeSignature(this);
 		if (!err.ok()) {
@@ -37,8 +38,12 @@ Error Program::doSemanticAnalysis() {
 		if (!functions.emplace(i.name, &i).second) {
 			return Error(DUPLICATE_FUNCTION_SIGNATURE, i.location);
 		}
+		if (i.name == "main")
+		{
+			found_main = true;
+		}
 	}
-	return Error();
+	return found_main ? Error() : Error(MAIN_NOT_FOUND, Location());
 }
 
 
@@ -55,6 +60,7 @@ Error Program::genCode() {
 
 
 Error Program::printCode(FILE *file) const {
+	fprintf(file, "GLOBAL _start\n_start:\n\tmov rdi, [rsp]\n\tlea rsi, [rsp+8]\n\tcall main\n\tmov rax, 60\n\txor rdi, rdi\n\tint 0x80\n");
 	for (const Function& i : code) {
 		Error err = i.printCode(file);
 		if (!err.ok()) {

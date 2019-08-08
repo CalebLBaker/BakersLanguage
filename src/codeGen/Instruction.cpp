@@ -3,9 +3,9 @@
 
 
 #ifdef TARGET_WINDOWS
-const char ENDL[2] = "\r\n";
+const char ENDL[3] = "\r\n";
 #else
-const char ENDL[1] = "\n";
+const char ENDL[2] = "\n";
 #endif
 
 

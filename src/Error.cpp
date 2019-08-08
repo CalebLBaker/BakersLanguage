@@ -22,6 +22,9 @@ std::string Error::toString() const {
 		case DUPLICATE_FUNCTION_SIGNATURE: {
 			return ret + " error: Ambiguous function overload with same parameters.\n";
 		}
+		case MAIN_NOT_FOUND: {
+			return "error: No declaration found for function main.\n";
+		}
 		default : {
 			return ret;
 		}
