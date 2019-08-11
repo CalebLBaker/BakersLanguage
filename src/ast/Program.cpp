@@ -1,4 +1,4 @@
-
+#include "globalDefines.h"
 #include "Program.h"
 
 
@@ -60,7 +60,11 @@ Error Program::genCode() {
 
 
 Error Program::printCode(FILE *file) const {
-	fprintf(file, "GLOBAL _start\n_start:\n\tmov rdi, [rsp]\n\tlea rsi, [rsp+8]\n\tcall main\n\tmov rax, 60\n\txor rdi, rdi\n\tint 0x80\n");
+#ifdef TARGET_X64
+ #ifdef TARGET_UNIX
+	fprintf(file, "GLOBAL _start\n_start:\n\tmov rdi, [rsp]\n\tlea rsi, [rsp+8]\n\tcall main\n\tmov rax, 60\n\txor rdi, rdi\n\tsyscall\n");
+ #endif
+#endif
 	for (const Function& i : code) {
 		Error err = i.printCode(file);
 		if (!err.ok()) {

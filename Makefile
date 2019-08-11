@@ -10,20 +10,20 @@ all: blc
 build:
 	mkdir build
 	mkdir build/scan
-	mkdir build/parse
+	mkdir build/ast
 	mkdir build/codeGen
 
 build/debug: build
 	mkdir build/debug
 	mkdir build/debug/scan
-	mkdir build/debug/parse
+	mkdir build/debug/ast
 	mkdir build/debug/codeGen
 
 build/debug/scan/%.o: src/scan/%.cpp build/debug
 	${CC} -g -Isrc -Isrc/scan -c $< -o $@
 
-build/debug/parse/%.o: src/parse/%.cpp build/debug
-	${CC} -g -Isrc -Isrc/parse -c $< -o $@
+build/debug/ast/%.o: src/ast/%.cpp build/debug
+	${CC} -g -Isrc -Isrc/ast -c $< -o $@
 
 build/debug/codeGen/%.o: src/codeGen/%.cpp build/debug
 	${CC} -g -Isrc -Isrc/codeGen -c $< -o $@
@@ -37,8 +37,8 @@ blc.dbg: $(DBGOBJECTS)
 build/scan/%.o: src/scan/%.cpp build
 	${CC} -Isrc -Isrc/scan -O3 -c $< -o $@
 
-build/parse/%.o: src/parse/%.cpp build
-	${CC} -Isrc -Isrc/parse -O3 -c $< -o $@
+build/ast/%.o: src/ast/%.cpp build
+	${CC} -Isrc -Isrc/ast -O3 -c $< -o $@
 
 build/codeGen/%.o: src/codeGen/%.cpp build
 	${CC} -Isrc -Isrc/codeGen -O3 -c $< -o $@
@@ -54,4 +54,5 @@ clean:
 	rm -f blc
 	rm -f blc.dbg
 	rm -f out.s
+	rm -f out.elf
 
