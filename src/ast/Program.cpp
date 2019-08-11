@@ -2,7 +2,7 @@
 #include "Program.h"
 
 
-Program::Program() : SyntaxNode() {
+Program::Program() : SyntaxNode(), main(nullptr) {
 	types.emplace("void", VOID);
 	types.emplace("sint8", SINT8);
 	types.emplace("sint16", SINT16);
@@ -29,7 +29,6 @@ Error Program::parse(Scanner *scanner) {
 
 
 Error Program::doSemanticAnalysis() {
-	bool found_main = false;
 	for (FunctionDeclaration& i : function_list) {
 		Error err = i.analyzeSignature(this);
 		if (!err.ok()) {
@@ -40,10 +39,10 @@ Error Program::doSemanticAnalysis() {
 		}
 		if (i.name == "main")
 		{
-			found_main = true;
+			main = &i;
 		}
 	}
-	return found_main ? Error() : Error(MAIN_NOT_FOUND, Location());
+	return main != nullptr ? Error() : Error(MAIN_NOT_FOUND, Location());
 }
 
 
@@ -62,7 +61,23 @@ Error Program::genCode() {
 Error Program::printCode(FILE *file) const {
 #ifdef TARGET_X64
  #ifdef TARGET_UNIX
-	fprintf(file, "GLOBAL _start\n_start:\n\tmov rdi, [rsp]\n\tlea rsi, [rsp+8]\n\tcall main\n\tmov rax, 60\n\txor rdi, rdi\n\tsyscall\n");
+ 	fprintf(file, "GLOBAL _start\n_start:\n");
+	
+	/*
+	if main has parameters:
+		fprintf(file, "\tmov rdi, [rsp]\n\tlea rsi, [rsp+8]\n");
+	*/
+
+	fprintf(file, "\tcall main\n");
+
+	/*
+	if main returns a value:
+		fprintf(file, "\tmov rdi, rax\n");
+	else:
+	*/
+	fprintf(file, "\txor rdi, rdi\n");
+
+	fprintf(file, "\tmov rax, 0x3C\n\tsyscall\n");
  #endif
 #endif
 	for (const Function& i : code) {

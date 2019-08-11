@@ -53,6 +53,8 @@ private:
 	// code contains the intermediate low level code for all the functions in the program
 	std::vector<Function> code;
 
+	FunctionDeclaration *main;
+
 };
 
 #endif
