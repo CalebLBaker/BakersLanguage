@@ -27,7 +27,7 @@ public:
 	 * param type: the type to match the next token to
 	 * returns:    true if the next token matched the specified type
 	 */
-	Error matchNextToken(TokenType type);
+	Error matchNextToken(Token::TokenType type);
 
 	/**
 	 * isOpen indicates whether the Scanner has a file open.

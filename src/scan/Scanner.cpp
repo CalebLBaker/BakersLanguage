@@ -17,7 +17,7 @@ Token Scanner::getNextToken() {
 }
 
 
-Error Scanner::matchNextToken(TokenType type) {
+Error Scanner::matchNextToken(Token::TokenType type) {
 	Error ret(SUCCESS, next_token.location);
 	if (next_token.type != type) {
 		ret.type = UNEXPECTED_TOKEN;
@@ -48,25 +48,25 @@ void Scanner::readNextToken() {
 				switch (next_char) {
 					case '(': {
 						location.column_number++;
-						next_token.type = LEFT_PAREN;
+						next_token.type = Token::LEFT_PAREN;
 						next_token.location = location;
 						return;
 					}
 					case ')': {
 						location.column_number++;
-						next_token.type = RIGHT_PAREN;
+						next_token.type = Token::RIGHT_PAREN;
 						next_token.location = location;
 						return;
 					}
 					case '{': {
 						location.column_number++;
-						next_token.type = LEFT_BRACE;
+						next_token.type = Token::LEFT_BRACE;
 						next_token.location = location;
 						return;
 					}
 					case '}': {
 						location.column_number++;
-						next_token.type = RIGHT_BRACE;
+						next_token.type = Token::RIGHT_BRACE;
 						next_token.location = location;
 						return;
 					}
@@ -80,7 +80,7 @@ void Scanner::readNextToken() {
 						break;
 					}
 					case EOF: {
-						next_token.type = END_OF_FILE;
+						next_token.type = Token::END_OF_FILE;
 						next_token.location = location;
 						return;
 					}
@@ -99,9 +99,9 @@ void Scanner::readNextToken() {
 				bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;
 				if (isspace(next_char) || new_token || next_char == EOF) {
 					ungetc(next_char, file);
-					next_token.type = IDENTIFIER;
+					next_token.type = Token::IDENTIFIER;
 					next_token.location = loc;
-					next_token.setValue(id);
+					next_token.setStringValue(id);
 					return;
 				}
 				else {

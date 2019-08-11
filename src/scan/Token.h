@@ -1,39 +1,61 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include <memory>
 #include "Location.h"
 
-// TokenType is an enumeration used to identify different types of symbols.
-enum TokenType {
-	IDENTIFIER,
-	LEFT_PAREN,
-	RIGHT_PAREN,
-	LEFT_BRACE,
-	RIGHT_BRACE,
-	END_OF_FILE,
-	ERROR
-};
-
 // Token is a struct used to represent symbols from the input file.
-struct Token {
+class Token {
+
+public:
+
+	// TokenType is an enumeration used to identify different types of symbols.
+	enum TokenType {
+		IDENTIFIER,
+		LEFT_PAREN,
+		RIGHT_PAREN,
+		LEFT_BRACE,
+		RIGHT_BRACE,
+		END_OF_FILE,
+		RETURN,
+		SEMICOLON,
+		INTEGER,
+		ERROR
+	};
+
+	union TokenValue {
+		std::string *strValue;
+		int64_t intValue;
+	};
 
 	// location is the location of the symbol.
 	Location location;
 
-	// value is used to  store the value of an identifier.
-	std::unique_ptr<std::string> value;
-
 	// type is used to identify what type of symbol this is.
 	TokenType type;
 
+	// value is used to  store the value of an identifier.
+	TokenValue value;
+
 	/**
-	 * Token constructs a Token object.
-	 * param t:    The type of token
+	 * Token constructs a Token object
+	 * param t:    The type of Token to construct
 	 * param loc:  The location of the token
-	 * param val:  The value of the token (if applicable)
 	 */
-	Token(TokenType t = ERROR, const Location *loc = nullptr, std::string&& val = "");
+	Token(TokenType t = ERROR, const Location *loc = nullptr);
+
+	/**
+	 * Token constructs an Identifier Token object.
+	 * param loc:  The location of the token
+	 * param val:  The name of the identifier
+	 */
+	Token(const Location *loc, std::string&& val);
+
+	/**
+	 * Token constructs an Integer Token object.
+	 * param loc:  The location of the token
+	 * param val:  The value of the integer
+	 */
+	Token(const Location *loc, int64_t val);
 
 	/**
 	 * Token copy constructs a Token.
@@ -48,10 +70,15 @@ struct Token {
 	Token(Token&& token);
 
 	/**
+	 * ~Token deallocates memory used by a Token.
+	 */
+	~Token();
+
+	/**
 	 * setValue sets the value field
 	 * param val: the value to set the value field to
 	 */
-	void setValue(const std::string& val);
+	void setStringValue(const std::string& val);
 
 };
 

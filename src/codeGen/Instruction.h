@@ -4,16 +4,16 @@
 #include <string>
 #include "Error.h"
 
-// Mnemonic represents an instruction mnemonic
-enum Mnemonic {
-	RETURN,
-	LABEL
-};
-
 // Instruction represents a single intermediate low-level instruction
 class Instruction {
 
 public:
+
+	// Mnemonic represents an instruction mnemonic
+	enum Mnemonic {
+		RETURN,
+		LABEL
+	};
 
 	/**
 	 * Instruction constructs an instruction

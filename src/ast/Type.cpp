@@ -4,8 +4,8 @@
 Error Type::parse(Scanner *scanner) {
 	Token next_token = scanner->getNextToken();
 	location = next_token.location;
-	if (next_token.type == IDENTIFIER) {
-		name = std::move(*(next_token.value));
+	if (next_token.type == Token::IDENTIFIER) {
+		name = std::move(*(next_token.value.strValue));
 		return Error();
 	}
 	else {

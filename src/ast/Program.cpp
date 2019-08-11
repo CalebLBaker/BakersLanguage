@@ -17,7 +17,7 @@ Program::Program() : SyntaxNode(), main(nullptr) {
 
 Error Program::parse(Scanner *scanner) {
 	location = scanner->next_token.location;
-	while (scanner->next_token.type != END_OF_FILE) {
+	while (scanner->next_token.type != Token::END_OF_FILE) {
 		function_list.push_back(FunctionDeclaration());
 		Error error = function_list.back().parse(scanner);
 		if (!error.ok()) {
