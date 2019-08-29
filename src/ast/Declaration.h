@@ -8,6 +8,10 @@
 class Declaration : public SyntaxNode {
 
 public:
+
+	// Default constructor
+	Declaration(Scope *s = nullptr, Namespace *n = nullptr);
+
 	/**
 	 * parse populates the Declaration by parsing tokens from a scanner
 	 * param scanner: the scanner to parse tokens from

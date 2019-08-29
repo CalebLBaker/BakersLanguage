@@ -1,0 +1,3 @@
+void main() {
+	#StringSlice str = "Hello, world!\n";
+}

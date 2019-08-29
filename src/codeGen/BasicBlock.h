@@ -8,6 +8,13 @@
 class BasicBlock {
 
 public:
+
+	// Default constructor
+	BasicBlock();
+
+	// Move constructor
+	BasicBlock(BasicBlock&& old);
+
 	/**
 	 * addInstruction adds an instruction to the basic block
 	 * param inst: the instruction to add

@@ -1,27 +1,54 @@
 #include "globalDefines.h"
 #include "Program.h"
+#include "Primitive.h"
+#include "ClassDeclaration.h"
 
 
-Program::Program() : SyntaxNode(), main(nullptr) {
-	types.emplace("void", VOID);
-	types.emplace("sint8", SINT8);
-	types.emplace("sint16", SINT16);
-	types.emplace("sint32", SINT32);
-	types.emplace("sint64", SINT64);
-	types.emplace("uint8", UINT8);
-	types.emplace("uint16", UINT16);
-	types.emplace("uint32", UINT32);
-	types.emplace("uint64", UINT64);
+Program::Program() : main(nullptr), global_namespace() {
+	global_namespace.types.emplace("void", (TypeDefinition*)new Primitive(false, 0));
+	global_namespace.types.emplace("uint8", (TypeDefinition*)new Primitive(false, 1));
+	global_namespace.types.emplace("uint16", (TypeDefinition*)new Primitive(false, 2));
+	global_namespace.types.emplace("uint32", (TypeDefinition*)new Primitive(false, 4));
+	global_namespace.types.emplace("uint64", (TypeDefinition*)new Primitive(false, 8));
+	global_namespace.types.emplace("sint8", (TypeDefinition*)new Primitive(true, 1));
+	global_namespace.types.emplace("sint16", (TypeDefinition*)new Primitive(true, 2));
+	global_namespace.types.emplace("sint32", (TypeDefinition*)new Primitive(true, 4));
+	global_namespace.types.emplace("sint64", (TypeDefinition*)new Primitive(true, 8));
 }
+
+
+Program::Program(Program&& old) : SyntaxNode(std::move(old)), function_list(std::move(old.function_list)), code(std::move(old.code)), main(old.main), global_namespace(std::move(old.global_namespace)) {}
 
 
 Error Program::parse(Scanner *scanner) {
 	location = scanner->next_token.location;
-	while (scanner->next_token.type != Token::END_OF_FILE) {
-		function_list.push_back(FunctionDeclaration());
-		Error error = function_list.back().parse(scanner);
-		if (!error.ok()) {
-			return error;
+	Token *next_token = &scanner->next_token;
+	Token::TokenType type;
+	for (type = next_token->type; type != Token::END_OF_FILE; type = next_token->type) {
+		switch (type) {
+			case Token::CLASS: {
+				ClassDeclaration *class_decl = new ClassDeclaration(&global_namespace, &global_namespace);
+				class_decl->parse(scanner);
+				std::string *name = &class_decl->name;
+				auto result = global_namespace.types.emplace(*name, (TypeDefinition*)class_decl);
+				if (!result.second) {
+					return Error(Error::DUPLICATE_TYPE, class_decl->location);
+				}
+				break;
+			}
+			case Token::IDENTIFIER: {
+				function_list.push_back(FunctionDeclaration(&global_namespace, &global_namespace));
+				Error error = function_list.back().parse(scanner);
+				if (!error.ok()) {
+					return error;
+				}
+				break;
+			}
+			default: {
+				std::string message = "Unexpected token \"" + next_token->toString();
+				message.append("\" found in global scope.");
+				return Error(Error::UNEXPECTED_TOKEN, next_token->location, message);
+			}
 		}
 	}
 	return Error();
@@ -30,19 +57,25 @@ Error Program::parse(Scanner *scanner) {
 
 Error Program::doSemanticAnalysis() {
 	for (FunctionDeclaration& i : function_list) {
-		Error err = i.analyzeSignature(this);
+		Error err = i.analyzeSignature();
 		if (!err.ok()) {
 			return err;
 		}
-		if (!functions.emplace(i.name, &i).second) {
-			return Error(DUPLICATE_FUNCTION_SIGNATURE, i.location);
+		if (!global_namespace.functions.emplace(i.name, &i).second) {
+			return Error(Error::DUPLICATE_FUNCTION_SIGNATURE, i.location);
 		}
 		if (i.name == "main")
 		{
 			main = &i;
 		}
 	}
-	return main != nullptr ? Error() : Error(MAIN_NOT_FOUND, Location());
+	for (FunctionDeclaration& i : function_list) {
+		Error err = i.doSemanticAnalysis();
+		if (!err.ok()) {
+			return err;
+		}
+	}
+	return main != nullptr ? Error() : Error(Error::MAIN_NOT_FOUND, Location());
 }
 
 

@@ -1,13 +1,17 @@
 #include "Scanner.h"
 
 
-const std::string Scanner::NON_ID_CHARS = "(){}";
+const std::string Scanner::NON_ID_CHARS = "(){};";
 
 
 Scanner::Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
 	file = fopen(infile_name, "r");
 	readNextToken();
 }
+
+
+Scanner::Scanner(Scanner&& old) : next_token(std::move(old.next_token)), file(old.file),
+                                  location(std::move(old.location)) {}
 
 
 Token Scanner::getNextToken() {
@@ -18,9 +22,24 @@ Token Scanner::getNextToken() {
 
 
 Error Scanner::matchNextToken(Token::TokenType type) {
-	Error ret(SUCCESS, next_token.location);
+	Error ret(Error::SUCCESS, next_token.location);
 	if (next_token.type != type) {
-		ret.type = UNEXPECTED_TOKEN;
+		std::string typeStr;
+		switch (type) {
+			case Token::IDENTIFIER: {
+				typeStr = "an identifier.\n";
+				break;
+			}
+			case Token::INTEGER: {
+				typeStr = "an integer.\n";
+				break;
+			}
+			default: {
+				typeStr = "\"" + Token::tokenTypeToString(type) + "\".\n";
+			}
+		}
+		ret.type = Error::UNEXPECTED_TOKEN;
+		ret.message = "Unexpected token \"" + next_token.toString() + "\"; Expected " + typeStr;
 	}
 	readNextToken();
 	return ret;
@@ -70,6 +89,12 @@ void Scanner::readNextToken() {
 						next_token.location = location;
 						return;
 					}
+					case ';': {
+						location.column_number++;
+						next_token.type = Token::SEMICOLON;
+						next_token.location = location;
+						return;
+					}
 					case '\n': {
 						location.column_number = 0;
 						location.line_number++;
@@ -99,9 +124,17 @@ void Scanner::readNextToken() {
 				bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;
 				if (isspace(next_char) || new_token || next_char == EOF) {
 					ungetc(next_char, file);
-					next_token.type = Token::IDENTIFIER;
 					next_token.location = loc;
-					next_token.setStringValue(id);
+					if (id == "return") {
+						next_token.type = Token::RETURN;
+					}
+					else if (id == "class") {
+						next_token.type = Token::CLASS;
+					}
+					else {
+						next_token.type = Token::IDENTIFIER;
+						next_token.setStringValue(id);
+					}
 					return;
 				}
 				else {

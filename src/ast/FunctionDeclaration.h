@@ -12,17 +12,14 @@ class FunctionDeclaration : public Declaration {
 
 public:
 
-	// return_type is the type that the function returns
-	Type return_type;
-
 	// name is the name of the function
 	std::string name;
 
-	// parameters is the list of parameters taken by the function
-	ParameterList parameters;
+	// Default constructor
+	FunctionDeclaration(Scope *s = nullptr, Namespace *n = nullptr);
 
-	// body is the body of the function
-	CompoundStatement body;
+	// Move constructor
+	FunctionDeclaration(FunctionDeclaration&& old);
 
 	Error parse(Scanner *scanner);
 
@@ -32,7 +29,13 @@ public:
 	 * param program: the program that the function is in
 	 * returns: an error object indicating any semantic errors in the function signature
 	 */
-	Error analyzeSignature(const Program *program);
+	Error analyzeSignature();
+
+	/**
+	 * doSemanticAnalysis performs semantic analysis on the function
+	 * returns: an error object indicating any semantic errors that may have occurred
+	 */
+	Error doSemanticAnalysis();
 
 	/**
 	 * genCode generates intermediate low level code for the function
@@ -40,6 +43,17 @@ public:
 	 * returns: an error object indicating any errors that may have occurred
 	 */
 	Error genCode(Function *low_level_func);
+
+private:
+
+	// return_type is the type that the function returns
+	Type return_type;
+
+	// parameters is the list of parameters taken by the function
+	ParameterList parameters;
+
+	// body is the body of the function
+	CompoundStatement body;
 
 };
 

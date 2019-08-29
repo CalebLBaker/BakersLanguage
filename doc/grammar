@@ -1,7 +1,10 @@
 Program             -> { Declaration }
-Declaration         -> FunctionDeclaration
+Declaration         -> FunctionDeclaration | ClassDeclaration
 FunctionDeclaration -> Type IDENTIFIER ParameterList CompoundStatement
 Type                -> IDENTIFIER
 ParameterList       -> ( )
-CompoundStatement   -> \{ \}
+CompoundStatement   -> \{ {Statement} \}
+Statement           -> CompoundStatement | return; | VariableDeclaration
+VariableDeclaration -> Type IDENTIFIER ;
+ClassDeclaration    -> class IDENTIFIER \{ \}
 

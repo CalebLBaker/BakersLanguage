@@ -19,6 +19,7 @@ public:
 		RETURN,
 		SEMICOLON,
 		INTEGER,
+		CLASS,
 		ERROR
 	};
 
@@ -27,14 +28,14 @@ public:
 		int64_t intValue;
 	};
 
+	// value is used to  store the value of an identifier.
+	TokenValue value;
+
 	// location is the location of the symbol.
 	Location location;
 
 	// type is used to identify what type of symbol this is.
 	TokenType type;
-
-	// value is used to  store the value of an identifier.
-	TokenValue value;
 
 	/**
 	 * Token constructs a Token object
@@ -79,6 +80,19 @@ public:
 	 * param val: the value to set the value field to
 	 */
 	void setStringValue(const std::string& val);
+
+	/**
+	 * toString converts a token into a string
+	 * returns: the string representation of the token
+	 */
+	std::string toString() const;
+
+	/**
+	 * tokenTypeToString converts a token type enum into a string
+	 * param type: the TokenType to convert to a string
+	 * returns: the string representation of type
+	 */
+	static std::string tokenTypeToString(TokenType type);
 
 };
 

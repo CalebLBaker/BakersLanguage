@@ -1,5 +1,12 @@
 #include "BasicBlock.h"
 
+
+BasicBlock::BasicBlock() : instructions() {}
+
+
+BasicBlock::BasicBlock(BasicBlock&& old) : instructions(std::move(old.instructions)) {}
+
+
 void BasicBlock::addInstruction(Instruction&& inst) {
 	instructions.emplace_back(inst);
 }

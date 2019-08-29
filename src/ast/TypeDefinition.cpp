@@ -1,3 +1,4 @@
 #include "TypeDefinition.h"
 
-TypeDefinition::TypeDefinition(TypeKind k) : kind(k) {}
+TypeDefinition::TypeDefinition(size_t s) : size(s) {}
+

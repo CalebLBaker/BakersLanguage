@@ -1,6 +1,13 @@
 #include "Type.h"
 #include "Program.h"
 
+
+Type::Type(Scope *s, Namespace *n) : SyntaxNode(s, n), name(), definition(nullptr) {}
+
+
+Type::Type(Type&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)) {}
+
+
 Error Type::parse(Scanner *scanner) {
 	Token next_token = scanner->getNextToken();
 	location = next_token.location;
@@ -9,19 +16,20 @@ Error Type::parse(Scanner *scanner) {
 		return Error();
 	}
 	else {
-		return Error(EXPECTED_IDENTIFIER, std::move(next_token.location));
+		return Error(Error::EXPECTED_IDENTIFIER, std::move(next_token.location));
 	}
 }
 
 
-Error Type::doSemanticAnalysis(const Program *program) {
-	const std::unordered_map<std::string, TypeDefinition> *type_map = &(program->types);
-	std::unordered_map<std::string, TypeDefinition>::const_iterator i = type_map->find(name);
-	if (i == type_map->cend()) {
-		return Error(NO_SUCH_TYPE, location);
+Error Type::doSemanticAnalysis() {
+	for (Namespace *n = context; n != nullptr; n = n->owning_namespace) {
+		auto type_map = &(n->types);
+		auto i = type_map->find(name);
+		if (i != type_map->cend()) {
+			definition = i->second.get();
+			return Error();
+		}
 	}
-	else {
-		definition = &(i->second);
-		return Error();
-	}
+	std::string message = "Type \"" + name + "\" does not exist in this scope\n";
+	return Error(Error::NO_SUCH_TYPE, location, message);
 }

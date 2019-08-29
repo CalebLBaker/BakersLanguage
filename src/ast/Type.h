@@ -12,11 +12,11 @@ class Type : SyntaxNode {
 
 public:
 
-	// name is the name of the type
-	std::string name;
+	// Default constructor
+	Type(Scope *s = nullptr, Namespace *n = nullptr);
 
-	// definition is a pointer to the definition for the type
-	const TypeDefinition *definition;
+	// Move constructor
+	Type(Type&& old);
 
 	/**
 	 * parse populates the Type object by parsing Tokens from a Scanner
@@ -30,7 +30,14 @@ public:
 	 * param program: the program that the type is in
 	 * returns: an error object indicating whether a definition was successfully found
 	 */
-	Error doSemanticAnalysis(const Program *program);
+	Error doSemanticAnalysis();
+
+private:
+	// name is the name of the type
+	std::string name;
+
+	// definition is a pointer to the definition for the type
+	const TypeDefinition *definition;
 	
 };
 

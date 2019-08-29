@@ -53,3 +53,57 @@ void Token::setStringValue(const std::string& val) {
 	type = IDENTIFIER;
 }
 
+
+std::string Token::toString() const {
+	switch (type) {
+		case IDENTIFIER: {
+			return *value.strValue;
+		}
+		case INTEGER: {
+			return std::to_string(value.intValue);
+		}
+		default: {
+			return tokenTypeToString(type);
+		}
+	}
+}
+
+
+std::string Token::tokenTypeToString(Token::TokenType type) {
+	switch (type) {
+		case LEFT_PAREN: {
+			return "(";
+		}
+		case RIGHT_PAREN: {
+			return ")";
+		}
+		case LEFT_BRACE: {
+			return "{";
+		}
+		case RIGHT_BRACE: {
+			return "}";
+		}
+		case END_OF_FILE: {
+			return "EOF";
+		}
+		case RETURN: {
+			return "return";
+		}
+		case SEMICOLON: {
+			return ";";
+		}
+		case CLASS: {
+			return "class";
+		}
+		case IDENTIFIER: {
+			return "identifier";
+		}
+		case INTEGER: {
+			return "integer";
+		}
+		default: {
+			return "Scanner Error";
+		}
+	}
+}
+

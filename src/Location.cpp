@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "Location.h"
 
 
@@ -36,5 +38,15 @@ std::string Location::toString() const {
 	std::string line_string = std::to_string(line_number);
 	std::string column_string = std::to_string(column_number);
 	return filename + ':' + line_string + ':' + column_string + ':';
+}
+
+
+std::string Location::getLine() const {
+	std::ifstream ifs(filename.c_str());
+	std::string line;
+	for (int i = 0; i < line_number; i++) {
+		getline(ifs, line);
+	}
+	return line + '\n';
 }
 

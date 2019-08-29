@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
 	Error err = ast.parse(&scanner);
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
+		fprintf(stderr, err.location.getLine().c_str());
 		return SYNTAX_ERROR;
 	}
 
@@ -74,6 +75,7 @@ int main(int argc, char **argv) {
 	err = ast.doSemanticAnalysis();
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
+		fprintf(stderr, err.location.getLine().c_str());
 		return SEMANTIC_ERROR;
 	}
 
@@ -81,6 +83,7 @@ int main(int argc, char **argv) {
 	err = ast.genCode();
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
+		fprintf(stderr, err.location.getLine().c_str());
 		return CODE_GEN_ERROR;
 	}
 
@@ -95,6 +98,7 @@ int main(int argc, char **argv) {
 	err = ast.printCode(outfile);
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
+		fprintf(stderr, err.location.getLine().c_str());
 		return CODE_GEN_ERROR;
 	}
 

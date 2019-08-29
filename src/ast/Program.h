@@ -5,17 +5,18 @@
 #include "FunctionDeclaration.h"
 #include "TypeDefinition.h"
 #include "codeGen/Function.h"
+#include "Namespace.h"
 
 // Program is the root node of an abstract syntax tree
-class Program : SyntaxNode {
+class Program : public SyntaxNode {
 
 public:
 
-	// types maps type names to type definitions for types declared in the global namespace
-	std::unordered_map<std::string, TypeDefinition> types;
-
 	// Program constructs a Program object that includes the type definitions for built-in types
 	Program();
+
+	// Move constructor
+	Program(Program&& old);
 
 	/**
 	 * parse parses the program
@@ -47,13 +48,12 @@ private:
 	// function_list is a list of all functions in the global namespace
 	std::vector<FunctionDeclaration> function_list;
 
-	// functions maps function names to function declarations
-	std::unordered_map<std::string, FunctionDeclaration*> functions;
-
 	// code contains the intermediate low level code for all the functions in the program
 	std::vector<Function> code;
 
 	FunctionDeclaration *main;
+
+	Namespace global_namespace;
 
 };
 

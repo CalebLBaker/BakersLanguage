@@ -11,6 +11,12 @@ public:
 	// blocks is an array of all of the basic blocks in the function
 	std::vector<BasicBlock> blocks;
 
+	// Default constructor
+	Function();
+
+	// Move constructor
+	Function(Function&& old);
+
 	/**
 	 * printCode prints the assembly code to a file
 	 * param file: the file to print to

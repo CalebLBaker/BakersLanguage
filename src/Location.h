@@ -8,9 +8,6 @@ class Location {
 
 public:
 
-	// filename is the name of the file that the location is in.
-	std::string filename;
-
 	// line_number is the 1-indexed number of the line in the file.
 	size_t line_number;
 
@@ -55,6 +52,17 @@ public:
 	 * returns: a string representation of the location
 	 */
 	std::string toString() const;
+
+	/**
+	 * getLine returns the contents of the line containing this location
+	 * returns: the line containing this location
+	 */
+	std::string getLine() const;
+
+private:
+
+	// filename is the name of the file that the location is in.
+	std::string filename;
 
 };
 

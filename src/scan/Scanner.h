@@ -16,6 +16,9 @@ public:
 	 */
 	Scanner(const char *infile_name);
 
+	// Move constructor
+	Scanner(Scanner&& old);
+
 	/**
 	 * getNextToken reads the next token from the file.
 	 * returns: the next token

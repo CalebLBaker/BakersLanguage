@@ -2,6 +2,16 @@
 #include "codeGen/Function.h"
 
 
+FunctionDeclaration::FunctionDeclaration(Scope *s, Namespace *n) : Declaration(s, n),
+                                                                   return_type(s, n), name(),
+																   parameters(s, n), body(s, n) {}
+
+
+FunctionDeclaration::FunctionDeclaration(FunctionDeclaration&& old)
+   : Declaration(std::move(old)), return_type(std::move(old.return_type)), name(std::move(old.name)),
+     parameters(std::move(old.parameters)), body(std::move(old.body)) {}
+
+
 Error FunctionDeclaration::parse(Scanner *scanner) {
 	location = scanner->next_token.location;
 	Error error = return_type.parse(scanner);
@@ -13,7 +23,7 @@ Error FunctionDeclaration::parse(Scanner *scanner) {
 		name = std::move(*(next_token.value.strValue));
 	}
 	else {
-		return Error(EXPECTED_IDENTIFIER, std::move(next_token.location));
+		return Error(Error::EXPECTED_IDENTIFIER, std::move(next_token.location));
 	}
 	error = parameters.parse(scanner);
 	if (!error.ok()) {
@@ -23,8 +33,17 @@ Error FunctionDeclaration::parse(Scanner *scanner) {
 }
 
 
-Error FunctionDeclaration::analyzeSignature(const Program *program) {
-	return return_type.doSemanticAnalysis(program);
+Error FunctionDeclaration::analyzeSignature() {
+	return return_type.doSemanticAnalysis();
+}
+
+
+Error FunctionDeclaration::doSemanticAnalysis() {
+	Error result = parameters.doSemanticAnalysis();
+	if (!result.ok()) {
+		return result;
+	}
+	return body.doSemanticAnalysis();
 }
 
 

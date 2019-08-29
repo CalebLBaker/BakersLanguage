@@ -1,0 +1,8 @@
+void main() {
+	print("Hello, world!\n");
+}
+
+void print(#StringSlice str) {
+	SYSCALL(1, 1, str.data, str.size);
+}
+
