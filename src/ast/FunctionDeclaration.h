@@ -47,7 +47,7 @@ public:
 private:
 
 	// return_type is the type that the function returns
-	Type return_type;
+	std::unique_ptr<Type> return_type;
 
 	// parameters is the list of parameters taken by the function
 	ParameterList parameters;

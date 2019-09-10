@@ -1,7 +1,7 @@
 Program             -> { Declaration }
 Declaration         -> FunctionDeclaration | ClassDeclaration
-FunctionDeclaration -> Type IDENTIFIER ParameterList CompoundStatement
-Type                -> IDENTIFIER
+FunctionDeclaration -> func ParameterList [ => Type ] IDENTIFIER CompoundStatement
+Type                -> { \[ \] } IDENTIFIER
 ParameterList       -> ( )
 CompoundStatement   -> \{ {Statement} \}
 Statement           -> CompoundStatement | return; | VariableDeclaration

@@ -1,11 +1,11 @@
 #include "globalDefines.h"
 #include "Program.h"
 #include "Primitive.h"
+#include "Alias.h"
 #include "ClassDeclaration.h"
 
 
 Program::Program() : main(nullptr), global_namespace() {
-	global_namespace.types.emplace("void", (TypeDefinition*)new Primitive(false, 0));
 	global_namespace.types.emplace("uint8", (TypeDefinition*)new Primitive(false, 1));
 	global_namespace.types.emplace("uint16", (TypeDefinition*)new Primitive(false, 2));
 	global_namespace.types.emplace("uint32", (TypeDefinition*)new Primitive(false, 4));
@@ -14,6 +14,9 @@ Program::Program() : main(nullptr), global_namespace() {
 	global_namespace.types.emplace("sint16", (TypeDefinition*)new Primitive(true, 2));
 	global_namespace.types.emplace("sint32", (TypeDefinition*)new Primitive(true, 4));
 	global_namespace.types.emplace("sint64", (TypeDefinition*)new Primitive(true, 8));
+	TypeDefinition *char8  = new Primitive(false, 1);
+	global_namespace.types.emplace("char8", char8);
+	global_namespace.types.emplace("char", (TypeDefinition*)new Alias(char8));
 }
 
 
@@ -36,7 +39,7 @@ Error Program::parse(Scanner *scanner) {
 				}
 				break;
 			}
-			case Token::IDENTIFIER: {
+			case Token::FUNC: {
 				function_list.push_back(FunctionDeclaration(&global_namespace, &global_namespace));
 				Error error = function_list.back().parse(scanner);
 				if (!error.ok()) {

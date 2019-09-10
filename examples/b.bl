@@ -1,6 +1,3 @@
-class StringSlice {
-}
-
-void main() {
-	StringSlice str;
+func() main {
+	[]char str;
 }

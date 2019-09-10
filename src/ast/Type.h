@@ -1,9 +1,13 @@
 #ifndef TYPE_H
 #define TYPE_H
 
+#include <memory>
+#include <vector>
+
 #include "SyntaxNode.h"
 #include "scan/Scanner.h"
 #include "TypeDefinition.h"
+#include "TypeModifier.h"
 
 class Program;
 
@@ -11,6 +15,13 @@ class Program;
 class Type : SyntaxNode {
 
 public:
+
+	// name is the name of the type
+	std::string name;
+
+	// modifiers modify the type by making it constant or turning it into a pointer, array,
+	// or slice
+	std::vector<TypeModifier> modifiers;
 
 	// Default constructor
 	Type(Scope *s = nullptr, Namespace *n = nullptr);
@@ -33,9 +44,6 @@ public:
 	Error doSemanticAnalysis();
 
 private:
-	// name is the name of the type
-	std::string name;
-
 	// definition is a pointer to the definition for the type
 	const TypeDefinition *definition;
 	

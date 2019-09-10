@@ -58,7 +58,8 @@ private:
 
 	enum State {
 		START,
-		IN_IDENTIFIER
+		IN_IDENTIFIER,
+		HAVE_EQUAL
 	};
 
 };

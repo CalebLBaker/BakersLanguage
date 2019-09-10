@@ -28,13 +28,13 @@ Error CompoundStatement::parse(Scanner *scanner) {
 				new_statement = (Statement*)new CompoundStatement(&local_scope, context);
 				break;
 			}
+			case Token::LEFT_BRACKET:
 			case Token::IDENTIFIER: {
 				new_statement = (Statement*)new VariableDeclaration(&local_scope, context);
 				break;
 			}
 			default: {
-				std::string message = "Unexpected token \"" + next_token->toString();
-				message.append("\" found in function");
+				std::string message = "Unexpected token \"" + next_token->toString() + "\"\n";
 				return Error(Error::UNEXPECTED_TOKEN, next_token->location, message);
 			}
 		}

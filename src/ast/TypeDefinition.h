@@ -13,8 +13,9 @@ public:
 	 */
 	TypeDefinition(size_t s = 0);
 
-private:
+	// size is the size of the data type in bytes
 	size_t size;
+
 };
 
 #endif

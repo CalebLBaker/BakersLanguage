@@ -4,7 +4,10 @@ VariableDeclaration::VariableDeclaration(Scope *s, Namespace *n) : Statement(s, 
 
 Error VariableDeclaration::parse(Scanner *scanner) {
 	type = std::make_unique<Type>(scope, context);
-	type->parse(scanner);
+	Error error = type->parse(scanner);
+	if (!error.ok()) {
+		return error;
+	}
 	Token next_token = scanner->getNextToken();
 	if (next_token.type == Token::IDENTIFIER)
 	{

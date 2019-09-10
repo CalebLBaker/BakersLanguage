@@ -8,7 +8,7 @@
 #include "SyntaxNode.h"
 
 
-class ClassDeclaration : TypeDefinition, public SyntaxNode {
+class ClassDeclaration : public TypeDefinition, public SyntaxNode {
 
 public:
 

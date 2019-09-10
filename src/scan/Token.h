@@ -15,11 +15,15 @@ public:
 		RIGHT_PAREN,
 		LEFT_BRACE,
 		RIGHT_BRACE,
+		LEFT_BRACKET,
+		RIGHT_BRACKET,
 		END_OF_FILE,
 		RETURN,
 		SEMICOLON,
 		INTEGER,
 		CLASS,
+		FUNC,
+		RETURN_SPECIFIER,
 		ERROR
 	};
 
@@ -69,6 +73,9 @@ public:
 	 * param token: The Token to move
 	 */
 	Token(Token&& token);
+
+	// Move assignment
+	Token& operator=(Token&& rhs);
 
 	/**
 	 * ~Token deallocates memory used by a Token.

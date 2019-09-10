@@ -3,7 +3,7 @@
 
 #include "TypeDefinition.h"
 
-class Primitive : TypeDefinition {
+class Primitive : public TypeDefinition {
 public:
 	Primitive(bool sign = true, size_t s = 0);
 private:

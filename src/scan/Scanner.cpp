@@ -1,7 +1,7 @@
 #include "Scanner.h"
 
 
-const std::string Scanner::NON_ID_CHARS = "(){};";
+const std::string Scanner::NON_ID_CHARS = "(){};=>[]";
 
 
 Scanner::Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
@@ -89,11 +89,29 @@ void Scanner::readNextToken() {
 						next_token.location = location;
 						return;
 					}
+					case '[': {
+						location.column_number++;
+						next_token.type = Token::LEFT_BRACKET;
+						next_token.location = location;
+						return;
+					}
+					case ']': {
+						location.column_number++;
+						next_token.type = Token::RIGHT_BRACKET;
+						next_token.location = location;
+						return;
+					}
 					case ';': {
 						location.column_number++;
 						next_token.type = Token::SEMICOLON;
 						next_token.location = location;
 						return;
+					}
+					case '=': {
+						location.column_number++;
+						state = HAVE_EQUAL;
+						loc = location;
+						break;
 					}
 					case '\n': {
 						location.column_number = 0;
@@ -120,6 +138,17 @@ void Scanner::readNextToken() {
 				}
 				break;
 			}
+			case HAVE_EQUAL: {
+				location.column_number++;
+				if (next_token.type == '>') {
+					next_token.type = Token::RETURN_SPECIFIER;
+				}
+				else {
+					next_token.type = Token::ERROR;
+				}
+				next_token.location = loc;
+				return;
+			}
 			case IN_IDENTIFIER: {
 				bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;
 				if (isspace(next_char) || new_token || next_char == EOF) {
@@ -130,6 +159,9 @@ void Scanner::readNextToken() {
 					}
 					else if (id == "class") {
 						next_token.type = Token::CLASS;
+					}
+					else if (id == "func") {
+						next_token.type = Token::FUNC;
 					}
 					else {
 						next_token.type = Token::IDENTIFIER;

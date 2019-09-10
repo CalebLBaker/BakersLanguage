@@ -1,11 +1,15 @@
-| Symbol Name | Regular Expression     | Example     |
-|-------------|------------------------|-------------|
-| LeftParen   | \(                     | (           |
-| RightParen  | \)                     | )           |
-| LeftBrace   | {                      | {           |
-| RightBrace  | }                      | }           |
-| Semicolon   | ;                      | ;           |
-| Return      | return                 | return      |
-| Class       | class                  | class       |
-| Identifier  | [a-zA-Z_][a-zA-Z0-9_]* | someVarName |
+| Symbol Name  | Regular Expression     | Example     |
+|--------------|------------------------|-------------|
+| LeftParen    | \(                     | (           |
+| RightParen   | \)                     | )           |
+| LeftBrace    | {                      | {           |
+| RightBrace   | }                      | }           |
+| LeftBracket  | [                      | [           |
+| RightBracket | ]                      | ]           |
+| Semicolon    | ;                      | ;           |
+| Return       | return                 | return      |
+| Class        | class                  | class       |
+| Func         | func                   | func        |
+| ReturnSpec   | =>                     | =>          |
+| Identifier   | [a-zA-Z_][a-zA-Z0-9_]* | someVarName |
 

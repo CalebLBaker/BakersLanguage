@@ -38,6 +38,16 @@ Token::Token(Token&& token) : type(token.type), location(std::move(token.locatio
 }
 
 
+Token& Token::operator=(Token&& rhs) {
+	type = rhs.type;
+	location = std::move(rhs.location);
+	value.intValue = rhs.value.intValue;
+	rhs.type = ERROR;
+	rhs.value.strValue = nullptr;
+	return *this;
+}
+
+
 Token::~Token() {
 	if (type == IDENTIFIER) {
 		delete value.strValue;
@@ -83,6 +93,12 @@ std::string Token::tokenTypeToString(Token::TokenType type) {
 		case RIGHT_BRACE: {
 			return "}";
 		}
+		case LEFT_BRACKET: {
+			return "[";
+		}
+		case RIGHT_BRACKET: {
+			return "]";
+		}
 		case END_OF_FILE: {
 			return "EOF";
 		}
@@ -94,6 +110,12 @@ std::string Token::tokenTypeToString(Token::TokenType type) {
 		}
 		case CLASS: {
 			return "class";
+		}
+		case FUNC: {
+			return "func";
+		}
+		case RETURN_SPECIFIER: {
+			return "=>";
 		}
 		case IDENTIFIER: {
 			return "identifier";
