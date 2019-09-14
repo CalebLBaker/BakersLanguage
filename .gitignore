@@ -4,3 +4,6 @@ blc.dbg
 out.s
 out.elf
 
+Debug
+Release
+
