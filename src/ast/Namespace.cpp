@@ -1,5 +1,6 @@
 #include "Namespace.h"
 #include "Slice.h"
+#include "Constant.h"
 
 
 Namespace::Namespace(Scope *s, Namespace *n) : Scope(s, n), types(), functions() {}
@@ -22,15 +23,15 @@ const TypeDefinition* Namespace::getDefinition(const Type *type) {
 		return nullptr;
 	}
 
-	const std::vector<TypeModifier> *modifiers = &type->modifiers;
+	const std::vector<TypeModifier::Modifier> *modifiers = &type->modifiers;
 	return n->getDefinitionRecurse(name, modifiers->cbegin(), modifiers->cend());
 }
 
 
-const TypeDefinition* Namespace::getDefinitionRecurse(const std::string *name, std::vector<TypeModifier>::const_iterator modifier_begin, std::vector<TypeModifier>::const_iterator modifier_end) {
+const TypeDefinition* Namespace::getDefinitionRecurse(const std::string *name, std::vector<TypeModifier::Modifier>::const_iterator modifier_begin, std::vector<TypeModifier::Modifier>::const_iterator modifier_end) {
 
 	std::string modified_name = "";
-	for (std::vector<TypeModifier>::const_iterator i = modifier_begin; i != modifier_end; i++) {
+	for (auto i = modifier_begin; i != modifier_end; i++) {
 		modified_name.append(toString(*i));
 	}
 	modified_name.append(*name);
@@ -42,7 +43,21 @@ const TypeDefinition* Namespace::getDefinitionRecurse(const std::string *name, s
 	
 	const TypeDefinition *base_type = getDefinitionRecurse(name, modifier_begin + 1, modifier_end);
 
-	const TypeDefinition *ret = new Slice(base_type);
+	const TypeDefinition *ret;
+	switch (*modifier_begin) {
+		case TypeModifier::SLICE: {
+			ret = new Slice(base_type);
+			break;
+		}
+		case TypeModifier::CONST: {
+			ret = new Constant(base_type);
+			break;
+		}
+		default: {
+			return nullptr;
+		}
+	}
+
 	types.emplace(modified_name, ret);
 	return ret;
 }

@@ -113,6 +113,12 @@ void Scanner::readNextToken() {
 						loc = location;
 						break;
 					}
+					case '#': {
+						location.column_number++;
+						next_token.type = Token::CONST;
+						next_token.location = location;
+						return;
+					}
 					case '\n': {
 						location.column_number = 0;
 						location.line_number++;

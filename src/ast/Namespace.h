@@ -37,7 +37,7 @@ public:
 
 private:
 
-	const TypeDefinition* getDefinitionRecurse(const std::string *name, std::vector<TypeModifier>::const_iterator modifier_begin, std::vector<TypeModifier>::const_iterator modifier_end);
+	const TypeDefinition* getDefinitionRecurse(const std::string *name, std::vector<TypeModifier::Modifier>::const_iterator modifier_begin, std::vector<TypeModifier::Modifier>::const_iterator modifier_end);
 
 };
 

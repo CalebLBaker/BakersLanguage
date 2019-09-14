@@ -21,7 +21,7 @@ public:
 
 	// modifiers modify the type by making it constant or turning it into a pointer, array,
 	// or slice
-	std::vector<TypeModifier> modifiers;
+	std::vector<TypeModifier::Modifier> modifiers;
 
 	// Default constructor
 	Type(Scope *s = nullptr, Namespace *n = nullptr);

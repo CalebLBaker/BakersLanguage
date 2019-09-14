@@ -24,6 +24,7 @@ public:
 		CLASS,
 		FUNC,
 		RETURN_SPECIFIER,
+		CONST,
 		ERROR
 	};
 

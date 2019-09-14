@@ -117,6 +117,9 @@ std::string Token::tokenTypeToString(Token::TokenType type) {
 		case RETURN_SPECIFIER: {
 			return "=>";
 		}
+		case CONST: {
+			return "#";
+		}
 		case IDENTIFIER: {
 			return "identifier";
 		}

@@ -1,7 +1,16 @@
 #include "TypeModifier.h"
 
 
-std::string toString(TypeModifier mod) {
-	return "[]";
+namespace TypeModifier {
+
+	std::string toString(Modifier mod) {
+		if (mod == CONST) {
+			return "#";
+		}
+		else {
+			return "[]";
+		}
+	}
+
 }
 

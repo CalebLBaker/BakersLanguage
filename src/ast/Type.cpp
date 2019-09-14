@@ -18,7 +18,11 @@ Error Type::parse(Scanner *scanner) {
 				if (!error.ok()) {
 					return error;
 				}
-				modifiers.emplace_back(SLICE);
+				modifiers.emplace_back(TypeModifier::SLICE);
+				break;
+			}
+			case Token::CONST: {
+				modifiers.emplace_back(TypeModifier::CONST);
 				break;
 			}
 			case Token::IDENTIFIER: {
