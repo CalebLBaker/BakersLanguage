@@ -36,6 +36,7 @@ add_executable(blcTests
 
 			   LocationTest.h
 			   SyntaxNodeTest.h
+			   TokenTest.h
 )
 
 target_link_libraries(blcTests gtest_main blclib)

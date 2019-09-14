@@ -1,5 +1,6 @@
 #include "LocationTest.h"
 #include "SyntaxNodeTest.h"
+#include "TokenTest.h"
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);

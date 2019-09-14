@@ -1,7 +1,6 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
-#include <cctype>
 #include "Token.h"
 #include "Error.h"
 
