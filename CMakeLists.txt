@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 3.0)
 
-project(BakersLanguage)
+cmake_policy(SET CMP0048 NEW)
+
+project(BakersLanguage VERSION 1.0)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
