@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.2)
 
 project(BakersLanguage)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-add_executable(blc
-	src/main.cpp
+add_library(blclib
 
 	src/Error.cpp
 	src/Location.cpp
@@ -66,3 +65,10 @@ add_executable(blc
 	src/scan/Scanner.h
 	src/scan/Token.h
 )
+
+add_executable (blc src/main.cpp)
+
+target_link_libraries(blc blclib)
+
+add_subdirectory(unittests)
+

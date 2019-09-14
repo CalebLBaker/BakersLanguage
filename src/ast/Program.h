@@ -1,9 +1,7 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#include <unordered_map>
 #include "FunctionDeclaration.h"
-#include "TypeDefinition.h"
 #include "codeGen/Function.h"
 #include "Namespace.h"
 
