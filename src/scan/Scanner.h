@@ -58,6 +58,8 @@ private:
 	enum State {
 		START,
 		IN_IDENTIFIER,
+		IN_STRING,
+		ESCAPE_SEQUENCE,
 		HAVE_EQUAL
 	};
 

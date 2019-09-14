@@ -114,5 +114,7 @@ TEST_F(TokenTest, tokenTypeToStringTest) {
 	EXPECT_EQ(Token::tokenTypeToString(Token::RETURN_SPECIFIER), "=>");
 	EXPECT_EQ(Token::tokenTypeToString(Token::CONST), "#");
 	EXPECT_EQ(Token::tokenTypeToString(Token::ERROR), "Scanner Error");
+	EXPECT_EQ(Token::tokenTypeToString(Token::STRING_LITERAL), "string");
+	EXPECT_EQ(Token::tokenTypeToString(Token::ASSIGNMENT_OPERATOR), "=");
 }
 

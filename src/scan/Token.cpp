@@ -120,11 +120,17 @@ std::string Token::tokenTypeToString(Token::TokenType type) {
 		case CONST: {
 			return "#";
 		}
+		case ASSIGNMENT_OPERATOR: {
+			return "=";
+		}
 		case IDENTIFIER: {
 			return "identifier";
 		}
 		case INTEGER: {
 			return "integer";
+		}
+		case STRING_LITERAL: {
+			return "string";
 		}
 		default: {
 			return "Scanner Error";
