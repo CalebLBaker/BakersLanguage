@@ -41,5 +41,7 @@ private:
 
 };
 
+extern Namespace GLOBAL_SCOPE;
+
 #endif
 

@@ -15,6 +15,8 @@ public:
 
 	// Move constructor
 	Slice(Slice&& old);
+
+	std::string toString() const;
 	
 private:
 	const TypeDefinition *base_type;

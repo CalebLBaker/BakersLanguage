@@ -31,8 +31,8 @@ public:
 	};
 
 	union TokenValue {
-		std::string *strValue;
-		int64_t intValue;
+		std::string *str_value;
+		int64_t int_value;
 	};
 
 	// value is used to  store the value of an identifier.

@@ -16,6 +16,7 @@ add_library(blclib
 	src/ast/CompoundStatement.cpp
 	src/ast/Constant.cpp
 	src/ast/Declaration.cpp
+	src/ast/Expression.cpp
 	src/ast/FunctionDeclaration.cpp
 	src/ast/Namespace.cpp
 	src/ast/ParameterList.cpp
@@ -46,6 +47,7 @@ add_library(blclib
 	src/ast/CompoundStatement.h
 	src/ast/Constant.h
 	src/ast/Declaration.h
+	src/ast/Expression.h
 	src/ast/FunctionDeclaration.h
 	src/ast/Namespace.h
 	src/ast/ParameterList.h

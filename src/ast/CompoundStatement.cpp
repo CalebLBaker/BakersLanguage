@@ -39,10 +39,7 @@ Error CompoundStatement::parse(Scanner *scanner) {
 			}
 		}
 		statements.emplace_back(new_statement);
-		result = new_statement->parse(scanner);
-		if (!result.ok()) {
-			return result;
-		}
+		TRY(new_statement->parse(scanner));
 		if (type == Token::IDENTIFIER)
 		{
 			VariableDeclaration *var_decl = (VariableDeclaration*)new_statement;
@@ -62,10 +59,7 @@ Error CompoundStatement::parse(Scanner *scanner) {
 Error CompoundStatement::doSemanticAnalysis() {
 	std::vector<std::unique_ptr<Statement>>::iterator end = statements.end();
 	for (std::vector<std::unique_ptr<Statement>>::iterator i = statements.begin(); i != end; i++) {
-		Error result = (*i)->doSemanticAnalysis();
-		if (!result.ok()) {
-			return result;
-		}
+		TRY((*i)->doSemanticAnalysis());
 	}
 	return Error();
 }

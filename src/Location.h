@@ -20,7 +20,7 @@ public:
 	 * param line: the line number
 	 * param col:  the column number
 	 */
-	 Location(std::string file = "", size_t line = 1, size_t col = 1);
+	 Location(const std::string& file = "", size_t line = 1, size_t col = 1);
 
 	/**
 	 * Location copy constructs a Location from another Location

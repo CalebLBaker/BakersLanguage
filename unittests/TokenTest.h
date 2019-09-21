@@ -20,7 +20,7 @@ TEST_F(TokenTest, defaultConstructorTest) {
 	Token t(Token::RIGHT_PAREN, &l);
 	EXPECT_EQ(t.type, Token::RIGHT_PAREN);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(t.value.intValue, 0);
+	EXPECT_EQ(t.value.int_value, 0);
 }
 
 
@@ -28,7 +28,7 @@ TEST_F(TokenTest, identifierConstructorTest) {
 	Token t(&l, "id");
 	EXPECT_EQ(t.type, Token::IDENTIFIER);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(*t.value.strValue, std::string("id"));
+	EXPECT_EQ(*t.value.str_value, std::string("id"));
 }
 
 
@@ -36,7 +36,7 @@ TEST_F(TokenTest, intConstructorTest) {
 	Token t(&l, 20);
 	EXPECT_EQ(t.type, Token::INTEGER);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(t.value.intValue, 20);
+	EXPECT_EQ(t.value.int_value, 20);
 }
 
 
@@ -44,11 +44,11 @@ TEST_F(TokenTest, copyConstructorTest) {
 	Token t(x);
 	EXPECT_EQ(t.type, Token::INTEGER);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(t.value.intValue, 9);
+	EXPECT_EQ(t.value.int_value, 9);
 	Token u(y);
 	EXPECT_EQ(u.type, Token::IDENTIFIER);
 	EXPECT_EQ(u.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(*u.value.strValue, std::string("fox"));
+	EXPECT_EQ(*u.value.str_value, std::string("fox"));
 }
 
 
@@ -56,9 +56,9 @@ TEST_F(TokenTest, moveConstructorTest) {
 	Token t(std::move(x));
 	EXPECT_EQ(t.type, Token::INTEGER);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(t.value.intValue, 9);
+	EXPECT_EQ(t.value.int_value, 9);
 	EXPECT_EQ(x.type, Token::ERROR);
-	EXPECT_EQ(x.value.strValue, nullptr);
+	EXPECT_EQ(x.value.str_value, nullptr);
 }
 
 
@@ -66,9 +66,9 @@ TEST_F(TokenTest, assignmentOperatorTest) {
 	Token t = std::move(x);
 	EXPECT_EQ(t.type, Token::INTEGER);
 	EXPECT_EQ(t.location.toString(), std::string("llama.pdf:42:18:"));
-	EXPECT_EQ(t.value.intValue, 9);
+	EXPECT_EQ(t.value.int_value, 9);
 	EXPECT_EQ(x.type, Token::ERROR);
-	EXPECT_EQ(x.value.strValue, nullptr);
+	EXPECT_EQ(x.value.str_value, nullptr);
 }
 
 
@@ -80,11 +80,11 @@ TEST_F(TokenTest, DestructorTest) {
 
 TEST_F(TokenTest, setStringValueTest) {
 	y.setStringValue("land");
-	EXPECT_EQ(*y.value.strValue, std::string("land"));
+	EXPECT_EQ(*y.value.str_value, std::string("land"));
 	EXPECT_EQ(y.type, Token::IDENTIFIER);
-	x.value.strValue = 0;
+	x.value.str_value = 0;
 	x.setStringValue("sea");
-	EXPECT_EQ(*x.value.strValue, std::string("sea"));
+	EXPECT_EQ(*x.value.str_value, std::string("sea"));
 	EXPECT_EQ(x.type, Token::IDENTIFIER);
 }
 

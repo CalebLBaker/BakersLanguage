@@ -15,6 +15,10 @@ public:
 	// Move Constructor
 	Constant(Constant&& old);
 
+	const TypeDefinition* stripConst() const;
+
+	std::string toString() const;
+
 private:
 	const TypeDefinition *base_type;
 

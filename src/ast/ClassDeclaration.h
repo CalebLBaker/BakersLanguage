@@ -21,6 +21,8 @@ public:
 	// Name of the class
 	std::string name;
 
+	std::string toString() const;
+
 	Error parse(Scanner *scanner);
 
 };

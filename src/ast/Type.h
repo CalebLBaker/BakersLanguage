@@ -23,6 +23,9 @@ public:
 	// or slice
 	std::vector<TypeModifier::Modifier> modifiers;
 
+	// definition is a pointer to the definition for the type
+	const TypeDefinition *definition;
+	
 	// Default constructor
 	Type(Scope *s = nullptr, Namespace *n = nullptr);
 
@@ -43,10 +46,6 @@ public:
 	 */
 	Error doSemanticAnalysis();
 
-private:
-	// definition is a pointer to the definition for the type
-	const TypeDefinition *definition;
-	
 };
 
 #endif

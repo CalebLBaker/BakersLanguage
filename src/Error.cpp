@@ -1,5 +1,7 @@
 #include "Error.h"
 
+Error err;
+
 Error::Error() : location(), type(SUCCESS), message("") {}
 
 Error::Error(ErrorType t, Location&& loc, std::string&& msg) : location(std::move(loc)), type(t), message(std::move(msg)) {}
@@ -56,6 +58,12 @@ std::string Error::toString() const {
 		}
 		case DUPLICATE_VARIABLE: {
 			return ret + " error: Variable declared twice in the same scope.\n";
+		}
+		case UNDECLARED_VARIABLE: {
+			return ret + " error: Variable not declared in this scope.\n";
+		}
+		case TYPE_MISMATCH: {
+			return ret + " error: Incompatible types.\n";
 		}
 		default : {
 			return ret + '\n';

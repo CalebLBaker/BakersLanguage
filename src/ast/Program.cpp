@@ -5,22 +5,32 @@
 #include "ClassDeclaration.h"
 
 
-Program::Program() : main(nullptr), global_namespace() {
-	global_namespace.types.emplace("uint8", (TypeDefinition*)new Primitive(false, 1));
-	global_namespace.types.emplace("uint16", (TypeDefinition*)new Primitive(false, 2));
-	global_namespace.types.emplace("uint32", (TypeDefinition*)new Primitive(false, 4));
-	global_namespace.types.emplace("uint64", (TypeDefinition*)new Primitive(false, 8));
-	global_namespace.types.emplace("sint8", (TypeDefinition*)new Primitive(true, 1));
-	global_namespace.types.emplace("sint16", (TypeDefinition*)new Primitive(true, 2));
-	global_namespace.types.emplace("sint32", (TypeDefinition*)new Primitive(true, 4));
-	global_namespace.types.emplace("sint64", (TypeDefinition*)new Primitive(true, 8));
-	TypeDefinition *char8  = new Primitive(false, 1);
-	global_namespace.types.emplace("char8", char8);
-	global_namespace.types.emplace("char", (TypeDefinition*)new Alias(char8));
+std::unordered_set<std::string> string_literals;
+
+
+Program::Program() : main(nullptr) {
+	GLOBAL_SCOPE.types.emplace("uint8", (TypeDefinition*)new Primitive("uint8", false, 1));
+	GLOBAL_SCOPE.types.emplace("uint16", (TypeDefinition*)new Primitive("uint16", false, 2));
+	GLOBAL_SCOPE.types.emplace("uint32", (TypeDefinition*)new Primitive("uint32", false, 4));
+	GLOBAL_SCOPE.types.emplace("uint64", (TypeDefinition*)new Primitive("uint64", false, 8));
+	GLOBAL_SCOPE.types.emplace("sint8", (TypeDefinition*)new Primitive("sint8", true, 1));
+	GLOBAL_SCOPE.types.emplace("sint16", (TypeDefinition*)new Primitive("sint16", true, 2));
+	GLOBAL_SCOPE.types.emplace("sint32", (TypeDefinition*)new Primitive("sint32", true, 4));
+	GLOBAL_SCOPE.types.emplace("sint64", (TypeDefinition*)new Primitive("sint64", true, 8));
+	TypeDefinition *char8  = new Primitive("char8", false, 1);
+	TypeDefinition *char_type = new Alias("char", char8);
+	TypeDefinition *const_char = new Constant(char_type);
+	TypeDefinition *slice_const_char = new Slice(const_char);
+	TypeDefinition *const_slice_const_char = new Constant(slice_const_char);
+	GLOBAL_SCOPE.types.emplace("char8", char8);
+	GLOBAL_SCOPE.types.emplace("char", char_type);
+	GLOBAL_SCOPE.types.emplace("#char", const_char);
+	GLOBAL_SCOPE.types.emplace("[]#char", slice_const_char);
+	GLOBAL_SCOPE.types.emplace("#[]#char", const_slice_const_char);
 }
 
 
-Program::Program(Program&& old) : SyntaxNode(std::move(old)), function_list(std::move(old.function_list)), code(std::move(old.code)), main(old.main), global_namespace(std::move(old.global_namespace)) {}
+Program::Program(Program&& old) : SyntaxNode(std::move(old)), function_list(std::move(old.function_list)), code(std::move(old.code)), main(old.main) {}
 
 
 Error Program::parse(Scanner *scanner) {
@@ -30,21 +40,18 @@ Error Program::parse(Scanner *scanner) {
 	for (type = next_token->type; type != Token::END_OF_FILE; type = next_token->type) {
 		switch (type) {
 			case Token::CLASS: {
-				ClassDeclaration *class_decl = new ClassDeclaration(&global_namespace, &global_namespace);
+				ClassDeclaration *class_decl = new ClassDeclaration(&GLOBAL_SCOPE, &GLOBAL_SCOPE);
 				class_decl->parse(scanner);
 				std::string *name = &class_decl->name;
-				auto result = global_namespace.types.emplace(*name, (TypeDefinition*)class_decl);
+				auto result = GLOBAL_SCOPE.types.emplace(*name, (TypeDefinition*)class_decl);
 				if (!result.second) {
 					return Error(Error::DUPLICATE_TYPE, class_decl->location);
 				}
 				break;
 			}
 			case Token::FUNC: {
-				function_list.push_back(FunctionDeclaration(&global_namespace, &global_namespace));
-				Error error = function_list.back().parse(scanner);
-				if (!error.ok()) {
-					return error;
-				}
+				function_list.push_back(FunctionDeclaration(&GLOBAL_SCOPE, &GLOBAL_SCOPE));
+				TRY(function_list.back().parse(scanner));
 				break;
 			}
 			default: {
@@ -60,11 +67,8 @@ Error Program::parse(Scanner *scanner) {
 
 Error Program::doSemanticAnalysis() {
 	for (FunctionDeclaration& i : function_list) {
-		Error err = i.analyzeSignature();
-		if (!err.ok()) {
-			return err;
-		}
-		if (!global_namespace.functions.emplace(i.name, &i).second) {
+		TRY(i.analyzeSignature());
+		if (!GLOBAL_SCOPE.functions.emplace(i.name, &i).second) {
 			return Error(Error::DUPLICATE_FUNCTION_SIGNATURE, i.location);
 		}
 		if (i.name == "main")
@@ -73,10 +77,7 @@ Error Program::doSemanticAnalysis() {
 		}
 	}
 	for (FunctionDeclaration& i : function_list) {
-		Error err = i.doSemanticAnalysis();
-		if (!err.ok()) {
-			return err;
-		}
+		TRY(i.doSemanticAnalysis());
 	}
 	return main != nullptr ? Error() : Error(Error::MAIN_NOT_FOUND, Location());
 }
@@ -85,10 +86,7 @@ Error Program::doSemanticAnalysis() {
 Error Program::genCode() {
 	for (FunctionDeclaration& i : function_list) {
 		code.emplace_back(Function());
-		Error err = i.genCode(&(code.back()));
-		if (!err.ok()) {
-			return err;
-		}
+		TRY(i.genCode(&(code.back())));
 	}
 	return Error();
 }
@@ -117,10 +115,7 @@ Error Program::printCode(FILE *file) const {
  #endif
 #endif
 	for (const Function& i : code) {
-		Error err = i.printCode(file);
-		if (!err.ok()) {
-			return err;
-		}
+		TRY(i.printCode(file));
 	}
 	return Error();
 }

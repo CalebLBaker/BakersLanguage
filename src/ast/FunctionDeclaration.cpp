@@ -11,29 +11,18 @@ FunctionDeclaration::FunctionDeclaration(FunctionDeclaration&& old) : Declaratio
 Error FunctionDeclaration::parse(Scanner *scanner) {
 
 	location = scanner->next_token.location;
-
-	Error error = scanner->matchNextToken(Token::FUNC);
-	if (!error.ok()) {
-		return error;
-	}
-
-	error = parameters.parse(scanner);
-	if (!error.ok()) {
-		return error;
-	}
+	TRY(scanner->matchNextToken(Token::FUNC));
+	TRY(parameters.parse(scanner));
 
 	if (scanner->next_token.type == Token::RETURN_SPECIFIER) {
 		scanner->matchNextToken(Token::RETURN_SPECIFIER);
 		return_type = std::make_unique<Type>(scope, context);
-		error = return_type->parse(scanner);
-		if (!error.ok()) {
-			return error;
-		}
+		TRY(return_type->parse(scanner));
 	}
 
 	Token next_token = scanner->getNextToken();
 	if (next_token.type == Token::IDENTIFIER) {
-		name = std::move(*(next_token.value.strValue));
+		name = std::move(*(next_token.value.str_value));
 	}
 	else {
 		return Error(Error::EXPECTED_IDENTIFIER, std::move(next_token.location));
@@ -47,15 +36,12 @@ Error FunctionDeclaration::analyzeSignature() {
 	if (return_type == nullptr) {
 		return Error();
 	}
-	return return_type->doSemanticAnalysis();
+	TRY(return_type->doSemanticAnalysis());
+	return parameters.doSemanticAnalysis();
 }
 
 
 Error FunctionDeclaration::doSemanticAnalysis() {
-	Error result = parameters.doSemanticAnalysis();
-	if (!result.ok()) {
-		return result;
-	}
 	return body.doSemanticAnalysis();
 }
 

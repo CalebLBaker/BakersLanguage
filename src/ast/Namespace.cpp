@@ -3,6 +3,9 @@
 #include "Constant.h"
 
 
+Namespace GLOBAL_SCOPE;
+
+
 Namespace::Namespace(Scope *s, Namespace *n) : Scope(s, n), types(), functions() {}
 
 

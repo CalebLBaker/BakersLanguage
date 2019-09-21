@@ -14,10 +14,7 @@ Error Type::parse(Scanner *scanner) {
 	while (true) {
 		switch (next_token.type) {
 			case Token::LEFT_BRACKET: {
-				Error error = scanner->matchNextToken(Token::RIGHT_BRACKET);
-				if (!error.ok()) {
-					return error;
-				}
+				TRY(scanner->matchNextToken(Token::RIGHT_BRACKET));
 				modifiers.emplace_back(TypeModifier::SLICE);
 				break;
 			}
@@ -26,7 +23,7 @@ Error Type::parse(Scanner *scanner) {
 				break;
 			}
 			case Token::IDENTIFIER: {
-				name = std::move(*(next_token.value.strValue));
+				name = std::move(*(next_token.value.str_value));
 				return Error();
 			}
 			default: {

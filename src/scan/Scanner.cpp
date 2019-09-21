@@ -176,10 +176,12 @@ void Scanner::readNextToken() {
 						case '\n': {
 							location.column_number = 0;
 							location.line_number++;
+							str += next_char;
 							break;
 						}
 						case '\t': {
 							location.column_number += (4 - location.column_number % 4);
+							str += next_char;
 							break;
 						}
 						case EOF: {
@@ -193,9 +195,9 @@ void Scanner::readNextToken() {
 						}
 						default: {
 							location.column_number++;
+							str += next_char;
 						}
 					}
-					str += next_char;
 					break;
 				}
 			}
@@ -235,6 +237,8 @@ void Scanner::readNextToken() {
 						}
 					}
 				}
+				state = IN_STRING;
+				break;
 			}
 			case IN_IDENTIFIER: {
 				bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;

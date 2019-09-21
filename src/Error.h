@@ -3,6 +3,8 @@
 
 #include "Location.h"
 
+#define TRY(expression) err = expression; if (!err.ok()) return err;
+
 // Error is used for returning errors
 class Error {
 public:
@@ -16,7 +18,9 @@ public:
 		DUPLICATE_FUNCTION_SIGNATURE,
 		MAIN_NOT_FOUND,
 		DUPLICATE_TYPE,
-		DUPLICATE_VARIABLE
+		DUPLICATE_VARIABLE,
+		UNDECLARED_VARIABLE,
+		TYPE_MISMATCH
 	};
 
 	// type indicates what type of error it is
@@ -62,5 +66,7 @@ public:
 	std::string toString() const;
 
 };
+
+extern Error err;
 
 #endif

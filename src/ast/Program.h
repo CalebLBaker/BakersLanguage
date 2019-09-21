@@ -1,9 +1,13 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
+#include <unordered_set>
+
 #include "FunctionDeclaration.h"
 #include "codeGen/Function.h"
 #include "Namespace.h"
+#include "Constant.h"
+#include "Slice.h"
 
 // Program is the root node of an abstract syntax tree
 class Program : public SyntaxNode {
@@ -51,8 +55,8 @@ private:
 
 	FunctionDeclaration *main;
 
-	Namespace global_namespace;
-
 };
+
+extern std::unordered_set<std::string> string_literals;
 
 #endif

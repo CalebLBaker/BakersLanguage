@@ -3,7 +3,7 @@
 #include "Location.h"
 
 
-Location::Location(std::string file, size_t line, size_t col) : filename(file), line_number(line),
+Location::Location(const std::string& file, size_t line, size_t col) : filename(file), line_number(line),
 													            column_number(col) {}
 
 Location::Location(const Location& loc) : filename(loc.filename), line_number(loc.line_number),

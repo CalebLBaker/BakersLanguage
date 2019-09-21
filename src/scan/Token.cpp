@@ -2,75 +2,77 @@
 
 
 Token::Token(TokenType t, const Location *loc) : type(t), location(loc) {
-	value.intValue = 0;
+	value.int_value = 0;
 }
 
 
 Token::Token(const Location *loc, std::string&& val) : type(IDENTIFIER), location(loc) {
-	value.strValue = new std::string(std::move(val));
+	value.str_value = new std::string(std::move(val));
 }
 
 
 Token::Token(const Location *loc, int64_t val) : type(INTEGER), location(loc) {
-	value.intValue = val;
+	value.int_value = val;
 }
 
 
 Token::Token(const Token& token) : type(token.type), location(token.location) {
-	if (type == IDENTIFIER) {
-		if (token.value.strValue != nullptr) {
-			value.strValue = new std::string(*token.value.strValue);
+	if (type == IDENTIFIER || type == STRING_LITERAL) {
+		if (token.value.str_value != nullptr) {
+			value.str_value = new std::string(*token.value.str_value);
 		}
 		else {
-			value.strValue = nullptr;
+			value.str_value = nullptr;
 		}
 	}
 	else {
-		value.intValue = token.value.intValue;
+		value.int_value = token.value.int_value;
 	}
 }
 
 
 Token::Token(Token&& token) : type(token.type), location(std::move(token.location)) {
-	value.intValue = token.value.intValue;
+	value.int_value = token.value.int_value;
 	token.type = ERROR;
-	token.value.strValue = nullptr;
+	token.value.str_value = nullptr;
 }
 
 
 Token& Token::operator=(Token&& rhs) {
 	type = rhs.type;
 	location = std::move(rhs.location);
-	value.intValue = rhs.value.intValue;
+	value.int_value = rhs.value.int_value;
 	rhs.type = ERROR;
-	rhs.value.strValue = nullptr;
+	rhs.value.str_value = nullptr;
 	return *this;
 }
 
 
 Token::~Token() {
-	if (type == IDENTIFIER) {
-		delete value.strValue;
+	if (type == IDENTIFIER || type == STRING_LITERAL) {
+		delete value.str_value;
 	}
 }
 
 
 void Token::setStringValue(const std::string& val) {
-	if (value.strValue == nullptr) {
-		value.strValue = new std::string;
+	if (value.str_value == nullptr) {
+		value.str_value = new std::string;
 	}
-	*value.strValue = val;
-	type = IDENTIFIER;
+	*value.str_value = val;
+	if (type != STRING_LITERAL) {
+		type = IDENTIFIER;
+	}
 }
 
 
 std::string Token::toString() const {
 	switch (type) {
 		case IDENTIFIER: {
-			return *value.strValue;
+			return *value.str_value;
 		}
 		case INTEGER: {
-			return std::to_string(value.intValue);
+			return std::to_string(value.int_value);
 		}
 		default: {
 			return tokenTypeToString(type);

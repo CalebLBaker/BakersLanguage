@@ -5,6 +5,7 @@ Type                -> { \[ \] | # } IDENTIFIER
 ParameterList       -> ( )
 CompoundStatement   -> \{ {Statement} \}
 Statement           -> CompoundStatement | return; | VariableDeclaration
-VariableDeclaration -> Type IDENTIFIER ;
+VariableDeclaration -> Type IDENTIFIER [ = Rvalue ; ] ;
 ClassDeclaration    -> class IDENTIFIER \{ \}
+Rvalue              -> Identifier | STRING_LITERAL
 

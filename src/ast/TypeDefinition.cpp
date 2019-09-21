@@ -1,4 +1,10 @@
 #include "TypeDefinition.h"
 
-TypeDefinition::TypeDefinition(size_t s, bool constant) : size(s), is_const(constant) {}
+
+TypeDefinition::TypeDefinition(size_t s) : size(s) {}
+
+
+const TypeDefinition* TypeDefinition::stripConst() const {
+	return this;
+}
 
