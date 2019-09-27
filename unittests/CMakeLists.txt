@@ -30,17 +30,18 @@ endif()
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
 # Now simply link against gtest_main
-add_executable(blcTests
+add_executable(blcTest
 
-               blcTests.cpp
+               blcTest.cpp
 
+               ErrorTest.h
 			   LocationTest.h
 			   SyntaxNodeTest.h
 			   TokenTest.h
 )
 
-set_property(TARGET blcTests PROPERTY CXX_STANDARD 17)
+set_property(TARGET blcTest PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(blcTests gtest_main blclib)
-add_test(NAME blcTestsTest COMMAND blcTests)
+target_link_libraries(blcTest gtest_main blclib)
+add_test(NAME blcTestTest COMMAND blcTest)
 
