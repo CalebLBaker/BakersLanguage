@@ -39,6 +39,8 @@ add_executable(blcTests
 			   TokenTest.h
 )
 
+set_property(TARGET blcTests PROPERTY CXX_STANDARD 17)
+
 target_link_libraries(blcTests gtest_main blclib)
 add_test(NAME blcTestsTest COMMAND blcTests)
 

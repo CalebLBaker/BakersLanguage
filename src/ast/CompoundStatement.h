@@ -2,12 +2,12 @@
 #define COMPOUND_STATEMENT_H
 
 #include <vector>
-#include <memory>
 #include <unordered_map>
 
 #include "Scope.h"
 #include "VariableDeclaration.h"
 #include "scan/Scanner.h"
+#include "codeGen/BasicBlock.h"
 
 // CompoundStatement represents a compound statement
 class CompoundStatement : public Statement {
@@ -30,6 +30,13 @@ public:
 	 * returns: an error object indicating any semantic errors that may have occurred
 	 */
 	Error doSemanticAnalysis();
+
+	/**
+	 * genCode generates intermediate low level code for the function
+	 * param blocks: the basic blocks of the function containing this compound statement
+	 * returns: an error object indicating any errors that may have occurred
+	 */
+	Error codeGen(std::vector<BasicBlock> *blocks) const;
 
 private:
 	std::vector<std::unique_ptr<Statement>> statements;

@@ -7,6 +7,9 @@ class Primitive : public TypeDefinition {
 public:
 	Primitive(std::string type_name, bool sign = true, size_t s = 0);
 	std::string toString() const;
+
+	Error assignRegisters(std::vector<int64_t> *registers) const;
+
 private:
 	std::string name;
 	bool is_signed;

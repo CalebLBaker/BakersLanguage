@@ -18,3 +18,8 @@ std::string Constant::toString() const {
 	return "#" + base_type->toString();
 }
 
+
+Error Constant::assignRegisters(std::vector<int64_t> *registers) const {
+	return base_type->assignRegisters(registers);
+}
+

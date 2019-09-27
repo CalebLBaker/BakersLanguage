@@ -3,6 +3,9 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
+
+#include "Error.h"
 
 // TypeDefinition defines a data type
 class TypeDefinition {
@@ -28,6 +31,12 @@ public:
 	 */
 	virtual std::string toString() const = 0;
 
+	/**
+	 * assignRegisters assigns registers to be used by a variable of this type
+	 * param registers: the container to save the list of registers to
+	 * returns: an error object indicating any error that might have occurred
+	 */
+	virtual Error assignRegisters(std::vector<int64_t> *registers) const = 0;
 
 };
 

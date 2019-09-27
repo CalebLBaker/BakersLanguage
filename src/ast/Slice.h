@@ -4,6 +4,7 @@
 
 #include "ClassDeclaration.h"
 #include "TypeDefinition.h"
+#include "Pointer.h"
 
 
 class Slice : public ClassDeclaration {
@@ -11,7 +12,7 @@ class Slice : public ClassDeclaration {
 public:
 
 	// Default constructor
-	Slice(const TypeDefinition *bt, Scope *s = nullptr, Namespace *n = nullptr);
+	Slice(const Pointer *ptr_type, Scope *s = nullptr, Namespace *n = nullptr);
 
 	// Move constructor
 	Slice(Slice&& old);

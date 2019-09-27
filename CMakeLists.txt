@@ -20,6 +20,7 @@ add_library(blclib
 	src/ast/FunctionDeclaration.cpp
 	src/ast/Namespace.cpp
 	src/ast/ParameterList.cpp
+	src/ast/Pointer.cpp
 	src/ast/Primitive.cpp
 	src/ast/Program.cpp
 	src/ast/Scope.cpp
@@ -51,6 +52,7 @@ add_library(blclib
 	src/ast/FunctionDeclaration.h
 	src/ast/Namespace.h
 	src/ast/ParameterList.h
+	src/ast/Pointer.h
 	src/ast/Primitive.h
 	src/ast/Program.h
 	src/ast/Scope.h
@@ -65,12 +67,17 @@ add_library(blclib
 	src/codeGen/BasicBlock.h
 	src/codeGen/Function.h
 	src/codeGen/Instruction.h
+	src/codeGen/Value.h
 
 	src/scan/Scanner.h
 	src/scan/Token.h
 )
 
+set_property(TARGET blclib PROPERTY CXX_STANDARD 17)
+
 add_executable (blc src/main.cpp)
+
+set_property(TARGET blc PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(blc blclib)
 

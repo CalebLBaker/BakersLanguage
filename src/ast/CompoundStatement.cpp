@@ -23,6 +23,7 @@ Error CompoundStatement::parse(Scanner *scanner) {
 	Token::TokenType type;
 	for (type = next_token->type; type != Token::RIGHT_BRACE; type = next_token->type) {
 		Statement *new_statement = nullptr;
+		bool is_var_decl = false;
 		switch (type) {
 			case Token::LEFT_BRACE: {
 				new_statement = (Statement*)new CompoundStatement(&local_scope, context);
@@ -30,6 +31,7 @@ Error CompoundStatement::parse(Scanner *scanner) {
 			}
 			case Token::LEFT_BRACKET:
 			case Token::IDENTIFIER: {
+				is_var_decl = true;
 				new_statement = (Statement*)new VariableDeclaration(&local_scope, context);
 				break;
 			}
@@ -40,7 +42,7 @@ Error CompoundStatement::parse(Scanner *scanner) {
 		}
 		statements.emplace_back(new_statement);
 		TRY(new_statement->parse(scanner));
-		if (type == Token::IDENTIFIER)
+		if (is_var_decl)
 		{
 			VariableDeclaration *var_decl = (VariableDeclaration*)new_statement;
 			auto insert_result = variables.emplace(var_decl->name, var_decl);
@@ -60,6 +62,17 @@ Error CompoundStatement::doSemanticAnalysis() {
 	std::vector<std::unique_ptr<Statement>>::iterator end = statements.end();
 	for (std::vector<std::unique_ptr<Statement>>::iterator i = statements.begin(); i != end; i++) {
 		TRY((*i)->doSemanticAnalysis());
+	}
+	return Error();
+}
+
+
+Error CompoundStatement::codeGen(std::vector<BasicBlock> *blocks) const {
+	for (const auto& [key, value] : variables) {
+		TRY(value->assignRegisters());
+	}
+	for (const std::unique_ptr<Statement>& i : statements) {
+		TRY(i->codeGen(blocks));
 	}
 	return Error();
 }

@@ -18,6 +18,12 @@ public:
 	Function(Function&& old);
 
 	/**
+	 * allocateRegisters maps virtual registers to real registers
+	 * returns: an error object indicating whether register allocation was successful
+	 */
+	Error allocateRegisters();
+
+	/**
 	 * printCode prints the assembly code to a file
 	 * param file: the file to print to
 	 * returns: an error object indicating any error that may have occurred

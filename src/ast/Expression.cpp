@@ -35,10 +35,10 @@ Error Expression::doSemanticAnalysis() {
 			std::string message = "Variable \"" + str_value + "\" does not exist at this scope.";
 			return Error(Error::UNDECLARED_VARIABLE, location, message);
 		}
-		type = var_decl->type->definition;
+		type = var_decl->type.definition;
 	}
 	else {
-		string_literals.insert(str_value);
+		Program::addStringLiteral(str_value);
 		type = GLOBAL_SCOPE.types["#[]#char"].get();
 	}
 	

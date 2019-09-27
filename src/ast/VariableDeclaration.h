@@ -19,12 +19,21 @@ public:
 	std::string name;
 
 	// The type of the variable
-	std::unique_ptr<Type> type;
+	Type type;
 
 	Error doSemanticAnalysis();
 
+	/**
+	 * assignRegisters assigns (a) virtual register(s) to the variable
+	 * returns: An error object indicating whether any errors occurred
+	 */
+	Error assignRegisters();
+
+	Error codeGen(std::vector<BasicBlock> *blocks) const;
+
 private:
 	std::unique_ptr<Expression> initializer;
+	std::vector<int64_t> registers;
 };
 
 #endif

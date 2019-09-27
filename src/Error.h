@@ -20,7 +20,8 @@ public:
 		DUPLICATE_TYPE,
 		DUPLICATE_VARIABLE,
 		UNDECLARED_VARIABLE,
-		TYPE_MISMATCH
+		TYPE_MISMATCH,
+		OUT_OF_REGISTERS
 	};
 
 	// type indicates what type of error it is

@@ -3,6 +3,7 @@
 
 #include "scan/Scanner.h"
 #include "SyntaxNode.h"
+#include "codeGen/BasicBlock.h"
 
 // Statement represents a statement in the abstract syntax tree
 class Statement : public SyntaxNode {
@@ -18,6 +19,13 @@ public:
 	 * returns: an error object indicating any semantic errors that may have occurred
 	 */
 	virtual Error doSemanticAnalysis() = 0;
+
+	/**
+	 * codeGen generates low level code for the statement
+	 * param blocks: the list of basic blocks in the containing function
+	 * returns: an error object indicating any errors that might have occurred
+	 */
+	virtual Error codeGen(std::vector<BasicBlock> *blocks) const = 0;
 
 };
 

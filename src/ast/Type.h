@@ -46,6 +46,13 @@ public:
 	 */
 	Error doSemanticAnalysis();
 
+	/**
+	 * assignRegisters generates a list of registers to be used by a variable of this type
+	 * param registers: the container to save the list of registers to
+	 * returns: an error flag indicating any error that might have occurred
+	 */
+	Error assignRegisters(std::vector<int64_t> *registers) const;
+
 };
 
 #endif

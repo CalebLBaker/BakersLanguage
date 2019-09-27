@@ -19,6 +19,8 @@ public:
 
 	std::string toString() const;
 
+	Error assignRegisters(std::vector<int64_t> *registers) const;
+
 private:
 	const TypeDefinition *base_type;
 

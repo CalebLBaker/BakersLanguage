@@ -14,6 +14,12 @@ class Expression : public SyntaxNode {
 		// The type of the resulting value of the expression
 		const TypeDefinition *type;
 
+		// Name of the variable or value of the string literal
+		std::string str_value;
+
+		// Indicates whether the expression is is a variable or just a literal
+		bool is_var;
+
 		// Default constructor
 		Expression(Scope *s = nullptr, Namespace *n = nullptr);
 
@@ -31,10 +37,6 @@ class Expression : public SyntaxNode {
 		 */
 		Error doSemanticAnalysis();
 
-	private:
-
-		std::string str_value;
-		bool is_var;
 };
 
 

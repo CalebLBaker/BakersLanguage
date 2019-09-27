@@ -46,3 +46,8 @@ Error Type::doSemanticAnalysis() {
 	return Error();
 }
 
+
+Error Type::assignRegisters(std::vector<int64_t> *registers) const {
+	return definition->assignRegisters(registers);
+}
+

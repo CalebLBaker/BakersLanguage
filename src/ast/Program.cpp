@@ -5,26 +5,31 @@
 #include "ClassDeclaration.h"
 
 
-std::unordered_set<std::string> string_literals;
+size_t Program::next_sequence_number = 0;
+int64_t Program::next_register_number = 0;
+std::unordered_map<std::string, size_t> Program::string_literals;
 
 
 Program::Program() : main(nullptr) {
 	GLOBAL_SCOPE.types.emplace("uint8", (TypeDefinition*)new Primitive("uint8", false, 1));
 	GLOBAL_SCOPE.types.emplace("uint16", (TypeDefinition*)new Primitive("uint16", false, 2));
 	GLOBAL_SCOPE.types.emplace("uint32", (TypeDefinition*)new Primitive("uint32", false, 4));
-	GLOBAL_SCOPE.types.emplace("uint64", (TypeDefinition*)new Primitive("uint64", false, 8));
+	GLOBAL_SCOPE.types.emplace("uint64", (TypeDefinition*)UINT64);
 	GLOBAL_SCOPE.types.emplace("sint8", (TypeDefinition*)new Primitive("sint8", true, 1));
 	GLOBAL_SCOPE.types.emplace("sint16", (TypeDefinition*)new Primitive("sint16", true, 2));
 	GLOBAL_SCOPE.types.emplace("sint32", (TypeDefinition*)new Primitive("sint32", true, 4));
 	GLOBAL_SCOPE.types.emplace("sint64", (TypeDefinition*)new Primitive("sint64", true, 8));
+	GLOBAL_SCOPE.types.emplace("uint", (TypeDefinition*)UINT);
 	TypeDefinition *char8  = new Primitive("char8", false, 1);
 	TypeDefinition *char_type = new Alias("char", char8);
 	TypeDefinition *const_char = new Constant(char_type);
-	TypeDefinition *slice_const_char = new Slice(const_char);
+	Pointer *pointer_const_char = new Pointer(const_char);
+	TypeDefinition *slice_const_char = new Slice(pointer_const_char);
 	TypeDefinition *const_slice_const_char = new Constant(slice_const_char);
 	GLOBAL_SCOPE.types.emplace("char8", char8);
 	GLOBAL_SCOPE.types.emplace("char", char_type);
 	GLOBAL_SCOPE.types.emplace("#char", const_char);
+	GLOBAL_SCOPE.types.emplace("&#char", pointer_const_char);
 	GLOBAL_SCOPE.types.emplace("[]#char", slice_const_char);
 	GLOBAL_SCOPE.types.emplace("#[]#char", const_slice_const_char);
 }
@@ -92,8 +97,42 @@ Error Program::genCode() {
 }
 
 
-Error Program::printCode(FILE *file) const {
+Error Program::printCode(FILE *file) {
+
+	for (Function& i : code) {
+		TRY(i.allocateRegisters());
+	}
+
 #ifdef TARGET_X64
+	if (!string_literals.empty()) {
+		fprintf(file, "section .rodata\n");
+		for (const auto& [key, value] : string_literals) {
+			fprintf(file, "_#%llu: db ", value);
+
+			std::string::const_iterator i = key.cbegin();
+			std::string::const_iterator end = key.cend();
+			while (true) {
+				if (!isEscapeSequence(*i)) {
+					fputc('\"', file);
+					while (!isEscapeSequence(*i)) {
+						fputc(*i, file);
+						i++;
+					}
+					fputc('\"', file);
+				}
+				else {
+					fprintf(file, "0x%hhx", *i);
+					i++;
+				}
+				if (i == end) {
+					break;
+				}
+				fputc(',', file);
+			}
+			fputc('\n', file);
+		}
+	}
+	fprintf(file, "section .text\n");
  #ifdef TARGET_UNIX
  	fprintf(file, "GLOBAL _start\n_start:\n");
 	
@@ -118,5 +157,32 @@ Error Program::printCode(FILE *file) const {
 		TRY(i.printCode(file));
 	}
 	return Error();
+}
+
+
+size_t Program::getNextSequenceNumber() {
+	return next_sequence_number++;
+}
+
+
+int64_t Program::getNewRegister() {
+	return next_register_number++;
+}
+
+
+void Program::addStringLiteral(const std::string& str) {
+	if (string_literals.count(str) == 0) {
+		string_literals[str] = getNextSequenceNumber();
+	}
+}
+
+
+std::string Program::getLabel(const std::string& value) {
+	return "_#" + std::to_string(string_literals[value]);
+}
+
+
+bool Program::isEscapeSequence(char c) {
+	return c == '\n' || c == '\t' || c == '\'' || c == '\"' || c == '\\' || c == '\r' || c == '\v';
 }
 

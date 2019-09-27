@@ -5,7 +5,7 @@ ClassDeclaration::ClassDeclaration(Scope *s, Namespace *n) : TypeDefinition(), S
                                                              name() {}
 
 
-ClassDeclaration::ClassDeclaration(ClassDeclaration&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)) {}
+ClassDeclaration::ClassDeclaration(ClassDeclaration&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)), members(std::move(old.members)) {}
 
 
 Error ClassDeclaration::parse(Scanner *scanner) {
@@ -24,5 +24,19 @@ Error ClassDeclaration::parse(Scanner *scanner) {
 
 std::string ClassDeclaration::toString() const {
 	return name;
+}
+
+
+Error ClassDeclaration::assignRegisters(std::vector<int64_t> *registers) const {
+	for (const auto& [name, type] : members) {
+		TRY(type->assignRegisters(registers));
+	}
+	return Error();
+}
+
+
+void ClassDeclaration::addMember(const std::string& name, const TypeDefinition *type) {
+	members.emplace_back(name, type);
+	member_map.emplace(name, type);
 }
 

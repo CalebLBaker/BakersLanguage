@@ -8,3 +8,8 @@ std::string Alias::toString() const {
 	return name;
 }
 
+
+Error Alias::assignRegisters(std::vector<int64_t> *registers) const {
+	return referenced_type->assignRegisters(registers);
+}
+

@@ -4,6 +4,8 @@
 
 
 Namespace GLOBAL_SCOPE;
+const Primitive *UINT64 = new Primitive("uint64", false, 8);
+const Alias *UINT = new Alias("uint", UINT64);
 
 
 Namespace::Namespace(Scope *s, Namespace *n) : Scope(s, n), types(), functions() {}
@@ -46,10 +48,20 @@ const TypeDefinition* Namespace::getDefinitionRecurse(const std::string *name, s
 	
 	const TypeDefinition *base_type = getDefinitionRecurse(name, modifier_begin + 1, modifier_end);
 
-	const TypeDefinition *ret;
+	TypeDefinition *ret;
 	switch (*modifier_begin) {
 		case TypeModifier::SLICE: {
-			ret = new Slice(base_type);
+			std::string ptr_type_name = "&" + base_type->toString();
+			auto entry = types.find(ptr_type_name);
+			Pointer *ptr_type;
+			if (entry != types.end()) {
+				ptr_type = (Pointer*)entry->second.get();
+			}
+			else {
+				ptr_type = new Pointer(base_type);
+				types.emplace(ptr_type_name, std::unique_ptr<TypeDefinition>(ptr_type));
+			}
+			ret = new Slice(ptr_type);
 			break;
 		}
 		case TypeModifier::CONST: {
@@ -61,7 +73,7 @@ const TypeDefinition* Namespace::getDefinitionRecurse(const std::string *name, s
 		}
 	}
 
-	types.emplace(modified_name, ret);
+	types.emplace(modified_name, std::unique_ptr<TypeDefinition>(ret));
 	return ret;
 }
 

@@ -49,9 +49,9 @@ Error FunctionDeclaration::doSemanticAnalysis() {
 Error FunctionDeclaration::genCode(Function *low_level_func) {
 	std::vector<BasicBlock> *blocks = &(low_level_func->blocks);
 	blocks->emplace_back(BasicBlock());
-	BasicBlock *block = &(blocks->back());
-	block->addInstruction(Instruction(&name));
-	block->addInstruction(Instruction(Instruction::RETURN));
+	blocks->back().addInstruction(Instruction(&name));
+	TRY(body.codeGen(blocks));
+	blocks->back().addInstruction(Instruction(Instruction::RETURN));
 	return Error();
 }
 

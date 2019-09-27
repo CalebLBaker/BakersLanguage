@@ -1,12 +1,13 @@
 #ifndef NAMESPACE_H
 #define NAMESPACE_H
 
-#include <memory>
 #include <unordered_map>
 
 #include "Scope.h"
 #include "TypeDefinition.h"
 #include "FunctionDeclaration.h"
+#include "Primitive.h"
+#include "Alias.h"
 
 // Namespace represents a scope in a program that can contain types, functions, and variables
 class Namespace : public Scope {
@@ -14,7 +15,7 @@ class Namespace : public Scope {
 public:
 
 	// types maps type names to type definitions
-	std::unordered_map<std::string, std::unique_ptr<const TypeDefinition>> types;
+	std::unordered_map<std::string, std::unique_ptr<TypeDefinition>> types;
 
 	// functions maps function names to function declarations
 	std::unordered_map<std::string, FunctionDeclaration*> functions;
@@ -42,6 +43,8 @@ private:
 };
 
 extern Namespace GLOBAL_SCOPE;
+extern const Primitive *UINT64;
+extern const Alias *UINT;
 
 #endif
 
