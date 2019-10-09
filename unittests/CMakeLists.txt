@@ -36,6 +36,7 @@ add_executable(blcTest
 
                ErrorTest.h
 			   LocationTest.h
+			   ScannerTest.h
 			   SyntaxNodeTest.h
 			   TokenTest.h
 )

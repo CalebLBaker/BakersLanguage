@@ -6,7 +6,9 @@ const std::string Scanner::NON_ID_CHARS = "(){};=>[]";
 
 Scanner::Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
 	file = fopen(infile_name, "r");
-	readNextToken();
+	if (file != nullptr) {
+		readNextToken();
+	}
 }
 
 
@@ -36,6 +38,7 @@ Error Scanner::matchNextToken(Token::TokenType type) {
 			}
 			case Token::STRING_LITERAL: {
 				typeStr = "a string literal.\n";
+				break;
 			}
 			default: {
 				typeStr = "\"" + Token::tokenTypeToString(type) + "\".\n";
@@ -55,7 +58,12 @@ bool Scanner::isOpen() const {
 
 
 bool Scanner::close() {
-	return fclose(file) == 0;
+	if (file != nullptr) {
+		bool ret = fclose(file) == 0;
+		file = nullptr;
+		return ret;
+	}
+	return true;
 }
 
 
@@ -126,6 +134,7 @@ void Scanner::readNextToken() {
 						location.column_number++;
 						state = IN_STRING;
 						loc = location;
+						break;
 					}
 					case '\n': {
 						location.column_number = 0;
@@ -153,7 +162,7 @@ void Scanner::readNextToken() {
 				break;
 			}
 			case HAVE_EQUAL: {
-				if (next_token.type == '>') {
+				if (next_char == '>') {
 					next_token.type = Token::RETURN_SPECIFIER;
 					location.column_number++;
 				}
