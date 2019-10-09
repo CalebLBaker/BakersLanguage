@@ -18,7 +18,6 @@ add_library(blclib
 	src/ast/Declaration.cpp
 	src/ast/Expression.cpp
 	src/ast/FunctionDeclaration.cpp
-	src/ast/Namespace.cpp
 	src/ast/ParameterList.cpp
 	src/ast/Pointer.cpp
 	src/ast/Primitive.cpp
@@ -50,7 +49,6 @@ add_library(blclib
 	src/ast/Declaration.h
 	src/ast/Expression.h
 	src/ast/FunctionDeclaration.h
-	src/ast/Namespace.h
 	src/ast/ParameterList.h
 	src/ast/Pointer.h
 	src/ast/Primitive.h

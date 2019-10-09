@@ -11,7 +11,7 @@
 class VariableDeclaration : public Statement {
 
 public:
-	VariableDeclaration(Scope *s = nullptr, Namespace *n = nullptr);
+	VariableDeclaration(Scope *s = nullptr);
 
 	Error parse(Scanner *scanner);
 

@@ -15,7 +15,7 @@ class CompoundStatement : public Statement {
 public:
 
 	// Default constructor
-	CompoundStatement(Scope *s = nullptr, Namespace *n = nullptr);
+	CompoundStatement(Scope *s = nullptr);
 
 	// Move constructor
 	CompoundStatement(CompoundStatement&& old);

@@ -1,7 +1,7 @@
 #include "ParameterList.h"
 
 
-ParameterList::ParameterList(Scope *s, Namespace *n) : SyntaxNode(s, n) {}
+ParameterList::ParameterList(Scope *s) : SyntaxNode(s) {}
 
 
 Error ParameterList::parse(Scanner *scanner) {

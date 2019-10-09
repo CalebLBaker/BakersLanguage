@@ -27,7 +27,7 @@ public:
 	const TypeDefinition *definition;
 	
 	// Default constructor
-	Type(Scope *s = nullptr, Namespace *n = nullptr);
+	Type(Scope *s = nullptr);
 
 	// Move constructor
 	Type(Type&& old);

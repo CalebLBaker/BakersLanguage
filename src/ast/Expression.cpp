@@ -1,10 +1,9 @@
 #include "Expression.h"
 #include "Scope.h"
-#include "Namespace.h"
 #include "Program.h"
 
 
-Expression::Expression(Scope *s, Namespace *n) : SyntaxNode(s, n), type(nullptr) {}
+Expression::Expression(Scope *s) : SyntaxNode(s), type(nullptr) {}
 
 
 Error Expression::parse(Scanner *scanner) {

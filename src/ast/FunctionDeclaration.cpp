@@ -2,7 +2,7 @@
 #include "codeGen/Function.h"
 
 
-FunctionDeclaration::FunctionDeclaration(Scope *s, Namespace *n) : Declaration(s, n), return_type(nullptr), name(), parameters(s, n), body(s, n) {}
+FunctionDeclaration::FunctionDeclaration(Scope *s) : Declaration(s), return_type(nullptr), name(), parameters(s), body(s) {}
 
 
 FunctionDeclaration::FunctionDeclaration(FunctionDeclaration&& old) : Declaration(std::move(old)), return_type(std::move(old.return_type)), name(std::move(old.name)), parameters(std::move(old.parameters)), body(std::move(old.body)) {}
@@ -16,7 +16,7 @@ Error FunctionDeclaration::parse(Scanner *scanner) {
 
 	if (scanner->next_token.type == Token::RETURN_SPECIFIER) {
 		scanner->matchNextToken(Token::RETURN_SPECIFIER);
-		return_type = std::make_unique<Type>(scope, context);
+		return_type = std::make_unique<Type>(scope);
 		TRY(return_type->parse(scanner));
 	}
 

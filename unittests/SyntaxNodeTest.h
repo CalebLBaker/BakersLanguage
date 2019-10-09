@@ -1,7 +1,8 @@
+#include "ast/SyntaxNode.h"
+
 #include "gtest/gtest.h"
 
-#include "ast/SyntaxNode.h"
-#include "ast/Namespace.h"
+#include "ast/Scope.h"
 
 
 class SyntaxNodeTest : public ::testing::Test {
@@ -12,7 +13,6 @@ class SyntaxNodeTest : public ::testing::Test {
 		~SyntaxNodeTest() {
 		}
 
-		Namespace n;
 		Scope s;
 };
 
@@ -21,12 +21,8 @@ class SyntaxNodeImp : public SyntaxNode {
 
 public:
 
-	SyntaxNodeImp(Scope *s = nullptr, Namespace *n = nullptr) : SyntaxNode(s, n) {}
+	SyntaxNodeImp(Scope *s = nullptr) : SyntaxNode(s) {}
 	SyntaxNodeImp(SyntaxNodeImp &&old) : SyntaxNode(std::move(old)) {}
-
-	Namespace* getContext() {
-		return context;
-	}
 
 	Scope* getScope() {
 		return scope;
@@ -35,18 +31,16 @@ public:
 
 
 TEST_F(SyntaxNodeTest, defaultConstructorTest) {
-	SyntaxNodeImp x(&s, &n);
-	EXPECT_EQ(x.getContext(), &n);
+	SyntaxNodeImp x(&s);
 	EXPECT_EQ(x.getScope(), &s);
 	EXPECT_EQ(x.location.toString(), std::string(":1:1:"));
 }
 
 
 TEST_F(SyntaxNodeTest, moveConstructorTest) {
-	SyntaxNodeImp x(&s, &n);
+	SyntaxNodeImp x(&s);
 	x.location = Location("file.txt", 2, 4);
 	SyntaxNodeImp y(std::move(x));
-	EXPECT_EQ(y.getContext(), &n);
 	EXPECT_EQ(y.getScope(), &s);
 	EXPECT_EQ(y.location.toString(), std::string("file.txt:2:4:"));
 }

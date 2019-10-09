@@ -12,7 +12,7 @@ class Slice : public ClassDeclaration {
 public:
 
 	// Default constructor
-	Slice(const Pointer *ptr_type, Scope *s = nullptr, Namespace *n = nullptr);
+	Slice(const Pointer *ptr_type, Scope *s = nullptr);
 
 	// Move constructor
 	Slice(Slice&& old);

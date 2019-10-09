@@ -17,7 +17,7 @@ public:
 	std::string name;
 
 	// Default constructor
-	FunctionDeclaration(Scope *s = nullptr, Namespace *n = nullptr);
+	FunctionDeclaration(Scope *s = nullptr);
 
 	// Move constructor
 	FunctionDeclaration(FunctionDeclaration&& old);

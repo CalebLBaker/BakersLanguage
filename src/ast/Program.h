@@ -3,7 +3,6 @@
 
 #include "FunctionDeclaration.h"
 #include "codeGen/Function.h"
-#include "Namespace.h"
 #include "Constant.h"
 #include "Slice.h"
 

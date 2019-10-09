@@ -5,7 +5,6 @@
 
 
 class Scope;
-class Namespace;
 
 
 // SyntaxNode is the base class inherited by abstract syntax tree nodes
@@ -17,14 +16,13 @@ public:
 	Location location;
 
 	// Default constructor
-	SyntaxNode(Scope *s = nullptr, Namespace *n = nullptr);
+	SyntaxNode(Scope *s = nullptr);
 
 	// Move constructor
 	SyntaxNode(SyntaxNode&& old);
 
 protected:
 
-	Namespace *context;
 	Scope *scope;
 
 };

@@ -1,8 +1,9 @@
 #include "Slice.h"
-#include "Namespace.h"
+
+#include "Scope.h"
 
 
-Slice::Slice(const Pointer *ptr_type, Scope *s, Namespace *n) : ClassDeclaration(s, n), base_type(ptr_type->base_type) {
+Slice::Slice(const Pointer *ptr_type, Scope *s) : ClassDeclaration(s), base_type(ptr_type->base_type) {
 	addMember("ptr", ptr_type);
 	addMember("size", UINT);
 }

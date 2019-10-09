@@ -2,11 +2,7 @@
 #include "VariableDeclaration.h"
 
 
-CompoundStatement::CompoundStatement(Scope *s, Namespace *n) : Statement(s, n), statements() {
-	int x = 2;
-	int y = x + 3;
-	}
-
+CompoundStatement::CompoundStatement(Scope *s) : Statement(s), statements() { } 
 
 CompoundStatement::CompoundStatement(CompoundStatement&& old) : Statement(std::move(old)), statements(std::move(old.statements)), local_scope(std::move(old.local_scope)), variables(std::move(old.variables))
 {}
@@ -26,13 +22,13 @@ Error CompoundStatement::parse(Scanner *scanner) {
 		bool is_var_decl = false;
 		switch (type) {
 			case Token::LEFT_BRACE: {
-				new_statement = (Statement*)new CompoundStatement(&local_scope, context);
+				new_statement = (Statement*)new CompoundStatement(&local_scope);
 				break;
 			}
 			case Token::LEFT_BRACKET:
 			case Token::IDENTIFIER: {
 				is_var_decl = true;
-				new_statement = (Statement*)new VariableDeclaration(&local_scope, context);
+				new_statement = (Statement*)new VariableDeclaration(&local_scope);
 				break;
 			}
 			default: {

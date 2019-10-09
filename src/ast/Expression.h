@@ -21,7 +21,7 @@ class Expression : public SyntaxNode {
 		bool is_var;
 
 		// Default constructor
-		Expression(Scope *s = nullptr, Namespace *n = nullptr);
+		Expression(Scope *s = nullptr);
 
 		/**
 		 * parse parses the Expression from a scanner

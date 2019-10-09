@@ -10,7 +10,7 @@ class ParameterList : SyntaxNode {
 public:
 
 	// Default constructor
-	ParameterList(Scope *s = nullptr, Namespace *n = nullptr);
+	ParameterList(Scope *s = nullptr);
 
 	/**
 	 * parse populates the ParameterList by parsing Tokens from a Scanner

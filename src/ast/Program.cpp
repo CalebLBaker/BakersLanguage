@@ -45,7 +45,7 @@ Error Program::parse(Scanner *scanner) {
 	for (type = next_token->type; type != Token::END_OF_FILE; type = next_token->type) {
 		switch (type) {
 			case Token::CLASS: {
-				ClassDeclaration *class_decl = new ClassDeclaration(&GLOBAL_SCOPE, &GLOBAL_SCOPE);
+				ClassDeclaration *class_decl = new ClassDeclaration(&GLOBAL_SCOPE);
 				class_decl->parse(scanner);
 				std::string *name = &class_decl->name;
 				auto result = GLOBAL_SCOPE.types.emplace(*name, (TypeDefinition*)class_decl);
@@ -55,7 +55,7 @@ Error Program::parse(Scanner *scanner) {
 				break;
 			}
 			case Token::FUNC: {
-				function_list.push_back(FunctionDeclaration(&GLOBAL_SCOPE, &GLOBAL_SCOPE));
+				function_list.push_back(FunctionDeclaration(&GLOBAL_SCOPE));
 				TRY(function_list.back().parse(scanner));
 				break;
 			}

@@ -1,8 +1,7 @@
 #include "ClassDeclaration.h"
 
 
-ClassDeclaration::ClassDeclaration(Scope *s, Namespace *n) : TypeDefinition(), SyntaxNode(s, n),
-                                                             name() {}
+ClassDeclaration::ClassDeclaration(Scope *s) : TypeDefinition(), SyntaxNode(s), name() {}
 
 
 ClassDeclaration::ClassDeclaration(ClassDeclaration&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)), members(std::move(old.members)) {}

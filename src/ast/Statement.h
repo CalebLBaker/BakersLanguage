@@ -10,7 +10,7 @@ class Statement : public SyntaxNode {
 public:
 
 	// Default constructor
-	Statement(Scope *s = nullptr, Namespace *n = nullptr);
+	Statement(Scope *s = nullptr);
 
 	virtual Error parse(Scanner *scanner) = 0;
 

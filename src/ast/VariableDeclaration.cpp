@@ -2,7 +2,7 @@
 #include "Scope.h"
 #include "Program.h"
 
-VariableDeclaration::VariableDeclaration(Scope *s, Namespace *n) : Statement(s, n), type(s, n), name("") {}
+VariableDeclaration::VariableDeclaration(Scope *s) : Statement(s), type(s), name("") {}
 
 Error VariableDeclaration::parse(Scanner *scanner) {
 	TRY(type.parse(scanner));
@@ -21,7 +21,7 @@ Error VariableDeclaration::parse(Scanner *scanner) {
 			return Error();
 		}
 		case Token::ASSIGNMENT_OPERATOR: {
-			initializer = std::make_unique<Expression>(scope, context);
+			initializer = std::make_unique<Expression>(scope);
 			TRY(initializer->parse(scanner));
 			return scanner->matchNextToken(Token::SEMICOLON);
 		}

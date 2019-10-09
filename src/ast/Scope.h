@@ -4,21 +4,39 @@
 
 #include <unordered_map>
 
+#include "Alias.h"
+#include "Primitive.h"
 #include "VariableDeclaration.h"
 
 
-class Namespace;
+class FunctionDeclaration;
 
 
 class Scope {
 
 public:
 
-	// The containing namespace that the scope is in
-	Namespace *owning_namespace;
+	// types maps type names to type definitions
+	std::unordered_map<std::string, std::unique_ptr<TypeDefinition>> types;
+
+	// functions maps function names to function declarations
+	std::unordered_map<std::string, FunctionDeclaration*> functions;
 
 	// Default constructor
-	Scope(Scope *s = nullptr, Namespace *n = nullptr);
+	Scope(Scope *s = nullptr);
+
+	// Move constructor
+	Scope(Scope&& old);
+
+	/**
+	 * getDefinition gets the definition for a type if that type is declared in this namespace
+	 * if the type has modifiers it will add a type definition for the modified type, provided
+	 * the base type exists
+	 * param type: the type to look for a defintion for
+	 * returns:    a pointer to the defintion of type; nullptr if type doesn't exist in this
+	 *             namespace
+	 */
+	const TypeDefinition* getDefinition(const Type *type);
 
 	/**
 	 * getVarDecl gets the declaration of a variable that exists in this scope
@@ -31,7 +49,15 @@ public:
 private:
 	std::unordered_map<std::string, VariableDeclaration*> variables;
 	Scope *owning_scope;
+
+	const TypeDefinition* getDefinitionRecurse(const std::string *name, std::vector<TypeModifier::Modifier>::const_iterator modifier_begin, std::vector<TypeModifier::Modifier>::const_iterator modifier_end);
+
 };
+
+
+extern Scope GLOBAL_SCOPE;
+extern const Primitive *UINT64;
+extern const Alias *UINT;
 
 
 #endif

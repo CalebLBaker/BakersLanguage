@@ -2,7 +2,7 @@
 #include "Program.h"
 
 
-Type::Type(Scope *s, Namespace *n) : SyntaxNode(s, n), name(), definition(nullptr) {}
+Type::Type(Scope *s) : SyntaxNode(s), name(), definition(nullptr) {}
 
 
 Type::Type(Type&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)) {}
@@ -38,7 +38,7 @@ Error Type::parse(Scanner *scanner) {
 
 
 Error Type::doSemanticAnalysis() {
-	definition = context->getDefinition(this);
+	definition = scope->getDefinition(this);
 	if (definition == nullptr) {
 		std::string message = "Type \"" + name + "\" does not exist in this scope\n";
 		return Error(Error::NO_SUCH_TYPE, location, message);

@@ -15,7 +15,7 @@ class ClassDeclaration : public TypeDefinition, public SyntaxNode {
 public:
 
 	// Default constructor
-	ClassDeclaration(Scope *s = nullptr, Namespace *n = nullptr);
+	ClassDeclaration(Scope *s = nullptr);
 
 	// Move constructor
 	ClassDeclaration(ClassDeclaration&& old);
