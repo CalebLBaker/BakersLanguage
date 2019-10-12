@@ -34,6 +34,7 @@ add_executable(blcTest
 
                blcTest.cpp
 
+			   DeclarationTest.h
                ErrorTest.h
 			   LocationTest.h
 			   ScannerTest.h

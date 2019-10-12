@@ -3,6 +3,7 @@
 #include "TokenTest.h"
 #include "ErrorTest.h"
 #include "ScannerTest.h"
+#include "DeclarationTest.h"
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
