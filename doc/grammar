@@ -5,7 +5,8 @@ Type                -> { \[ \] | # } IDENTIFIER
 ParameterList       -> ( )
 CompoundStatement   -> \{ {Statement} \}
 Statement           -> CompoundStatement | return; | VariableDeclaration
-VariableDeclaration -> Type IDENTIFIER [ = Rvalue ; ] ;
+VariableDeclaration -> Type IDENTIFIER [ = Expression ] ;
 ClassDeclaration    -> class IDENTIFIER \{ \}
-Rvalue              -> Identifier | STRING_LITERAL
+Expression          -> Identifier | STRING_LITERAL | SYSCALL ArgumentList | Expression . IDENTIFIER
+ArgumentList        -> ( [ Expression ] { , Expression } )
 

@@ -55,6 +55,19 @@ Token::~Token() {
 }
 
 
+void Token::setType(Token::TokenType new_type) {
+	bool had_string = type == IDENTIFIER || type == STRING_LITERAL;
+	bool have_string = new_type == IDENTIFIER || new_type == STRING_LITERAL;
+	if (have_string && !had_string) {
+		value.str_value = new std::string;
+	}
+	if (had_string && !have_string) {
+		delete value.str_value;
+	}
+	type = new_type;
+}
+
+
 void Token::setStringValue(const std::string& val) {
 	if (value.str_value == nullptr) {
 		value.str_value = new std::string;
@@ -124,6 +137,21 @@ std::string Token::tokenTypeToString(Token::TokenType type) {
 		}
 		case ASSIGNMENT_OPERATOR: {
 			return "=";
+		}
+		case SYSCALL: {
+			return "SYSCALL";
+		}
+		case COMMA: {
+			return ",";
+		}
+		case DOT: {
+			return ".";
+		}
+		case ADD: {
+			return "+";
+		}
+		case SUBTRACT: {
+			return "-";
 		}
 		case IDENTIFIER: {
 			return "identifier";

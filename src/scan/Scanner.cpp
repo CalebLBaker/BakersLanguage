@@ -1,7 +1,7 @@
 #include "Scanner.h"
 
 
-const std::string Scanner::NON_ID_CHARS = "(){};=>[]";
+const std::string Scanner::NON_ID_CHARS = "(){};=>[],.+-";
 
 
 Scanner::Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
@@ -70,6 +70,7 @@ bool Scanner::close() {
 void Scanner::readNextToken() {
 	State state = START;
 	std::string str = "";
+	int64_t int_val = 0;
 	Location loc;
 	while (true) {
 		int next_char = fgetc(file);
@@ -78,43 +79,55 @@ void Scanner::readNextToken() {
 				switch (next_char) {
 					case '(': {
 						location.column_number++;
-						next_token.type = Token::LEFT_PAREN;
+						next_token.setType(Token::LEFT_PAREN);
 						next_token.location = location;
 						return;
 					}
 					case ')': {
 						location.column_number++;
-						next_token.type = Token::RIGHT_PAREN;
+						next_token.setType(Token::RIGHT_PAREN);
 						next_token.location = location;
 						return;
 					}
 					case '{': {
 						location.column_number++;
-						next_token.type = Token::LEFT_BRACE;
+						next_token.setType(Token::LEFT_BRACE);
 						next_token.location = location;
 						return;
 					}
 					case '}': {
 						location.column_number++;
-						next_token.type = Token::RIGHT_BRACE;
+						next_token.setType(Token::RIGHT_BRACE);
 						next_token.location = location;
 						return;
 					}
 					case '[': {
 						location.column_number++;
-						next_token.type = Token::LEFT_BRACKET;
+						next_token.setType(Token::LEFT_BRACKET);
 						next_token.location = location;
 						return;
 					}
 					case ']': {
 						location.column_number++;
-						next_token.type = Token::RIGHT_BRACKET;
+						next_token.setType(Token::RIGHT_BRACKET);
 						next_token.location = location;
 						return;
 					}
 					case ';': {
 						location.column_number++;
-						next_token.type = Token::SEMICOLON;
+						next_token.setType(Token::SEMICOLON);
+						next_token.location = location;
+						return;
+					}
+					case ',': {
+						location.column_number++;
+						next_token.setType(Token::COMMA);
+						next_token.location = location;
+						return;
+					}
+					case '.': {
+						location.column_number++;
+						next_token.setType(Token::DOT);
 						next_token.location = location;
 						return;
 					}
@@ -126,7 +139,7 @@ void Scanner::readNextToken() {
 					}
 					case '#': {
 						location.column_number++;
-						next_token.type = Token::CONST;
+						next_token.setType(Token::CONST);
 						next_token.location = location;
 						return;
 					}
@@ -146,13 +159,27 @@ void Scanner::readNextToken() {
 						break;
 					}
 					case EOF: {
-						next_token.type = Token::END_OF_FILE;
+						next_token.setType(Token::END_OF_FILE);
 						next_token.location = location;
 						return;
 					}
+					case '0': {
+						location.column_number++;
+						next_token.location = location;
+						next_token.setType(Token::INTEGER);
+						state = HAVE_ZERO;
+						int_val = 0;
+						break;
+					}
 					default : {
 						location.column_number++;
-						if (!isspace(next_char)) {
+						if (isdigit(next_char)) {
+							next_token.location = location;
+							next_token.setType(Token::INTEGER);
+							state = DECIMAL_LITERAL;
+							int_val = next_char - '0';
+						}
+						else if (!isspace(next_char)) {
 							state = IN_IDENTIFIER;
 							loc = location;
 							str += next_char;
@@ -161,13 +188,106 @@ void Scanner::readNextToken() {
 				}
 				break;
 			}
+			case HAVE_ZERO: {
+				switch (next_char) {
+					case 'b': {
+						location.column_number++;
+						state = BINARY_LITERAL;
+						break;
+					}
+					case 'o': {
+						location.column_number++;
+						state = OCTAL_LITERAL;
+						break;
+					}
+					case 'd': {
+						location.column_number++;
+						state = DECIMAL_LITERAL;
+						break;
+					}
+					case 'x': {
+						location.column_number++;
+						state = HEXADECIMAL_LITERAL;
+						break;
+					}
+					default: {
+						if (isdigit(next_char)) {
+							int_val = next_char - '0';
+							location.column_number++;
+							state = DECIMAL_LITERAL;
+						}
+						else {
+							next_token.value.int_value = 0;
+							ungetc(next_char, file);
+							return;
+						}
+					}
+				}
+				break;
+			}
+			case BINARY_LITERAL: {
+				if (next_char == '0' || next_char == '1') {
+					location.column_number++;
+					int_val = (int_val << 1) | (next_char ^ '0');
+				}
+				else {
+					next_token.value.int_value = int_val;
+					ungetc(next_char, file);
+					return;
+				}
+				break;
+			}
+			case OCTAL_LITERAL: {
+				if (next_char >= '0' && next_char < '8') {
+					location.column_number++;
+					int_val = (int_val << 3) | (next_char - '0');
+				}
+				else {
+					next_token.value.int_value = int_val;
+					ungetc(next_char, file);
+					return;
+				}
+				break;
+			}
+			case DECIMAL_LITERAL: {
+				if (isdigit(next_char)) {
+					location.column_number++;
+					int_val = (int_val * 10) + (next_char - '0');
+				}
+				else {
+					next_token.value.int_value = int_val;
+					ungetc(next_char, file);
+					return;
+				}
+				break;
+			}
+			case HEXADECIMAL_LITERAL: {
+				int64_t next_digit = 0;
+				if (isdigit(next_char)) {
+					next_digit = next_char - '0';
+				}
+				else if (next_char >= 'a' && next_char <= 'f') {
+					next_digit = next_char - 87;
+				}
+				else if (next_char >= 'A' && next_char <= 'F') {
+					next_digit = next_char - 55;
+				}
+				else {
+					next_token.value.int_value = int_val;
+					ungetc(next_char, file);
+					return;
+				}
+				int_val = (int_val << 4) | next_digit;
+				location.column_number++;
+				break;
+			}
 			case HAVE_EQUAL: {
 				if (next_char == '>') {
-					next_token.type = Token::RETURN_SPECIFIER;
+					next_token.setType(Token::RETURN_SPECIFIER);
 					location.column_number++;
 				}
 				else {
-					next_token.type = Token::ASSIGNMENT_OPERATOR;
+					next_token.setType(Token::ASSIGNMENT_OPERATOR);
 					ungetc(next_char, file);
 				}
 				next_token.location = loc;
@@ -175,7 +295,7 @@ void Scanner::readNextToken() {
 			}
 			case IN_STRING: {
 				if (next_char == '\"') {
-					next_token.type = Token::STRING_LITERAL;
+					next_token.setType(Token::STRING_LITERAL);
 					next_token.setStringValue(str);
 					next_token.location = loc;
 					return;
@@ -194,7 +314,7 @@ void Scanner::readNextToken() {
 							break;
 						}
 						case EOF: {
-							next_token.type = Token::ERROR;
+							next_token.setType(Token::ERROR);
 							return;
 						}
 						case '\\': {
@@ -233,7 +353,7 @@ void Scanner::readNextToken() {
 						break;
 					}
 					case EOF: {
-						next_token.type = Token::ERROR;
+						next_token.setType(Token::ERROR);
 						return;
 					}
 					default: {
@@ -255,16 +375,19 @@ void Scanner::readNextToken() {
 					ungetc(next_char, file);
 					next_token.location = loc;
 					if (str == "return") {
-						next_token.type = Token::RETURN;
+						next_token.setType(Token::RETURN);
 					}
 					else if (str == "class") {
-						next_token.type = Token::CLASS;
+						next_token.setType(Token::CLASS);
 					}
 					else if (str == "func") {
-						next_token.type = Token::FUNC;
+						next_token.setType(Token::FUNC);
+					}
+					else if (str == "SYSCALL") {
+						next_token.setType(Token::SYSCALL);
 					}
 					else {
-						next_token.type = Token::IDENTIFIER;
+						next_token.setType(Token::IDENTIFIER);
 						next_token.setStringValue(str);
 					}
 					return;

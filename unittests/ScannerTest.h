@@ -6,7 +6,7 @@ class ScannerTest : public ::testing::Test {
 	public:
 		ScannerTest() {
 			FILE *f = fopen("scannerTestFile.txt", "w");
-			fprintf(f, "[](){};=#\"\n\t\\n\\t\\\n\\\t\\\"\\0a\"\nfunc\ta return=>class");
+			fprintf(f, "[](){};=#\"\n\t\\n\\t\\\n\\\t\\\"\\0a\"\nfunc\ta return=>class,0b101.0o512SYSCALL.0d193;0xf2A;0;015;32");
 			fclose(f);
 		}
 
@@ -93,8 +93,60 @@ TEST_F(ScannerTest, getNextTokenTest) {
 	EXPECT_EQ(t.type, Token::CLASS);
 	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:19:");
 	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::COMMA);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:24:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:25:");
+	EXPECT_EQ(t.value.int_value, 0b101);
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::DOT);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:30:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:31:");
+	EXPECT_EQ(t.value.int_value, 0b101001010);
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::SYSCALL);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:36:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::DOT);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:43:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:44:");
+	EXPECT_EQ(t.value.int_value, 193);
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::SEMICOLON);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:49:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:50:");
+	EXPECT_EQ(t.value.int_value, 0xF2A);
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::SEMICOLON);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:55:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:56:");
+	EXPECT_EQ(t.value.int_value, 0);
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::SEMICOLON);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:57:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.value.int_value, 15);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:58:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::SEMICOLON);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:61:");
+	t = s.getNextToken();
+	EXPECT_EQ(t.type, Token::INTEGER);
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:62:");
+	EXPECT_EQ(t.value.int_value, 32);
+	t = s.getNextToken();
 	EXPECT_EQ(t.type, Token::END_OF_FILE);
-	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:23:");
+	EXPECT_EQ(t.location.toString(), "scannerTestFile.txt:4:63:");
 }
 
 

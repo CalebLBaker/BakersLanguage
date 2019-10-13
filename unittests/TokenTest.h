@@ -89,6 +89,14 @@ TEST_F(TokenTest, setStringValueTest) {
 }
 
 
+TEST_F(TokenTest, setTypeTest) {
+	x.setType(Token::IDENTIFIER);
+	EXPECT_EQ(x.type, Token::IDENTIFIER);
+	x.setType(Token::SEMICOLON);
+	EXPECT_EQ(x.type, Token::SEMICOLON);
+}
+
+
 TEST_F(TokenTest, toStringTest) {
 	EXPECT_EQ(x.toString(), "9");
 	EXPECT_EQ(y.toString(), "fox");
@@ -116,5 +124,10 @@ TEST_F(TokenTest, tokenTypeToStringTest) {
 	EXPECT_EQ(Token::tokenTypeToString(Token::ERROR), "Scanner Error");
 	EXPECT_EQ(Token::tokenTypeToString(Token::STRING_LITERAL), "string");
 	EXPECT_EQ(Token::tokenTypeToString(Token::ASSIGNMENT_OPERATOR), "=");
+	EXPECT_EQ(Token::tokenTypeToString(Token::SYSCALL), "SYSCALL");
+	EXPECT_EQ(Token::tokenTypeToString(Token::COMMA), ",");
+	EXPECT_EQ(Token::tokenTypeToString(Token::DOT), ".");
+	EXPECT_EQ(Token::tokenTypeToString(Token::ADD), "+");
+	EXPECT_EQ(Token::tokenTypeToString(Token::SUBTRACT), "-");
 }
 

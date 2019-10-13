@@ -27,6 +27,11 @@ public:
 		CONST,
 		ASSIGNMENT_OPERATOR,
 		STRING_LITERAL,
+		SYSCALL,
+		COMMA,
+		DOT,
+		ADD,
+		SUBTRACT,
 		ERROR
 	};
 
@@ -84,6 +89,12 @@ public:
 	 * ~Token deallocates memory used by a Token.
 	 */
 	~Token();
+
+	/**
+	 * setType sets the type of the token
+	 * param new_type: the type to set the token type to
+	 */
+	void setType(TokenType new_type);
 
 	/**
 	 * setValue sets the value field
