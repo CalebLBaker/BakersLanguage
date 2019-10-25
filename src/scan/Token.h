@@ -40,14 +40,14 @@ public:
 		int64_t int_value;
 	};
 
-	// value is used to  store the value of an identifier.
-	TokenValue value;
+	// type is used to identify what type of symbol this is.
+	TokenType type;
 
 	// location is the location of the symbol.
 	Location location;
 
-	// type is used to identify what type of symbol this is.
-	TokenType type;
+	// value is used to  store the value of an identifier.
+	TokenValue value;
 
 	/**
 	 * Token constructs a Token object

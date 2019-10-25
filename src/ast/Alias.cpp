@@ -1,7 +1,7 @@
 #include "Alias.h"
 
 
-Alias::Alias(const std::string& alias_name, const TypeDefinition *ref) : name(alias_name), TypeDefinition(ref->size), referenced_type(ref) {}
+Alias::Alias(const std::string& alias_name, const TypeDefinition *ref) : TypeDefinition(ref->size), referenced_type(ref), name(alias_name) {}
 
 
 std::string Alias::toString() const {

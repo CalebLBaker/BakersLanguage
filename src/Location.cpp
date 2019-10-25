@@ -3,11 +3,9 @@
 #include "Location.h"
 
 
-Location::Location(const std::string& file, size_t line, size_t col) : filename(file), line_number(line),
-													            column_number(col) {}
+Location::Location(const std::string& file, size_t line, size_t col) : line_number(line), column_number(col), filename(file) {}
 
-Location::Location(const Location& loc) : filename(loc.filename), line_number(loc.line_number),
-								          column_number(loc.column_number) { }
+Location::Location(const Location& loc) : line_number(loc.line_number), column_number(loc.column_number), filename(loc.filename) { }
 
 Location::Location(const Location *loc) {
 	if (loc == nullptr) {
@@ -29,8 +27,7 @@ Location& Location::operator=(const Location& rhs) {
 }
 
 
-Location::Location(Location&& loc) : filename(std::move(loc.filename)),
-                                     line_number(loc.line_number), column_number(loc.column_number)
+Location::Location(Location&& loc) : line_number(loc.line_number), column_number(loc.column_number), filename(std::move(loc.filename))
 {}
 
 
@@ -44,7 +41,7 @@ std::string Location::toString() const {
 std::string Location::getLine() const {
 	std::ifstream ifs(filename.c_str());
 	std::string line;
-	for (int i = 0; i < line_number; i++) {
+	for (size_t i = 0; i < line_number; i++) {
 		getline(ifs, line);
 	}
 	return line + '\n';

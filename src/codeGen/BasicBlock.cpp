@@ -19,6 +19,7 @@ Error BasicBlock::allocateRegisters(std::unordered_map<int64_t, int64_t> *reg_ma
 		switch(i.type) {
 			case (Instruction::MOVE) : {
 				allocateReg(reg_map, &i.source_a.reg_num, next_real_reg);
+				break;
 			}
 			case (Instruction::MOVE_IMMEDIATE) : {
 				allocateReg(reg_map, &i.destination, next_real_reg);

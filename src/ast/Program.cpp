@@ -107,7 +107,7 @@ Error Program::printCode(FILE *file) {
 	if (!string_literals.empty()) {
 		fprintf(file, "section .rodata\n");
 		for (const auto& [key, value] : string_literals) {
-			fprintf(file, "_#%llu: db ", value);
+			fprintf(file, "_#%lu: db ", value);
 
 			std::string::const_iterator i = key.cbegin();
 			std::string::const_iterator end = key.cend();

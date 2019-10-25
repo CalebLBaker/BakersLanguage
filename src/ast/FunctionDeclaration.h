@@ -47,11 +47,11 @@ public:
 
 private:
 
-	// return_type is the type that the function returns
-	std::unique_ptr<Type> return_type;
-
 	// parameters is the list of parameters taken by the function
 	ParameterList parameters;
+
+	// return_type is the type that the function returns
+	std::unique_ptr<Type> return_type;
 
 	// body is the body of the function
 	CompoundStatement body;

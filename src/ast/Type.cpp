@@ -8,8 +8,13 @@ Type::Type(Scope *s) : SyntaxNode(s), name(), definition(nullptr) {}
 Type::Type(Type&& old) : SyntaxNode(std::move(old)), name(std::move(old.name)) {}
 
 
+Type::Type(Scope *s, Token&& look_ahead) : SyntaxNode(s), name(), definition(nullptr), next_token(std::move(look_ahead)) {}
+
+
 Error Type::parse(Scanner *scanner) {
-	Token next_token = scanner->getNextToken();
+	if (next_token.type == Token::ERROR) {
+		next_token = scanner->getNextToken();
+	}
 	location = next_token.location;
 	while (true) {
 		switch (next_token.type) {

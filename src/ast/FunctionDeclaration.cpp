@@ -2,10 +2,10 @@
 #include "codeGen/Function.h"
 
 
-FunctionDeclaration::FunctionDeclaration(Scope *s) : Declaration(s), return_type(nullptr), name(), parameters(s), body(s) {}
+FunctionDeclaration::FunctionDeclaration(Scope *s) : Declaration(s), name(), parameters(s), return_type(nullptr), body(s) {}
 
 
-FunctionDeclaration::FunctionDeclaration(FunctionDeclaration&& old) : Declaration(std::move(old)), return_type(std::move(old.return_type)), name(std::move(old.name)), parameters(std::move(old.parameters)), body(std::move(old.body)) {}
+FunctionDeclaration::FunctionDeclaration(FunctionDeclaration&& old) : Declaration(std::move(old)), name(std::move(old.name)), parameters(std::move(old.parameters)), return_type(std::move(old.return_type)), body(std::move(old.body)) {}
 
 
 Error FunctionDeclaration::parse(Scanner *scanner) {

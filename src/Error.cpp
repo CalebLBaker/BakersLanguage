@@ -2,11 +2,11 @@
 
 Error err;
 
-Error::Error() : location(), type(SUCCESS), message("") {}
+Error::Error() : type(SUCCESS), message("") {}
 
-Error::Error(ErrorType t, Location&& loc, std::string&& msg) : location(std::move(loc)), type(t), message(std::move(msg)) {}
+Error::Error(ErrorType t, Location&& loc, std::string&& msg) : type(t), location(std::move(loc)), message(std::move(msg)) {}
 
-Error::Error(ErrorType t, const Location& loc, const std::string& msg) : location(loc), type(t), message(msg) {}
+Error::Error(ErrorType t, const Location& loc, const std::string& msg) : type(t), location(loc), message(msg) {}
 
 Error::Error(const Error& original) : type(original.type), location(original.location), message(original.message) {}
 

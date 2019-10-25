@@ -10,7 +10,7 @@ const char ENDL[2] = "\n";
 
 
 #ifdef TARGET_X64
-const size_t NUM_REAL_REGS = 16;
+const int64_t NUM_REAL_REGS = 16;
 const std::string REGISTERS[NUM_REAL_REGS] = {
 	"r10", "r11", "r9", "r8", "rcx", "rdx", "rsi", "rdi", "rbx", "r12", "r13", "r14", "r15", "rbp"
 };
@@ -65,6 +65,7 @@ Error Instruction::printCode(FILE *file) const {
 			const char *dest_reg = REGISTERS[destination].c_str();
 			const char *src_reg = REGISTERS[source_a.reg_num].c_str();
 			fprintf(file, "\tmove %s, %s%s", dest_reg, src_reg, ENDL);
+			break;
 		}
 		case MOVE_IMMEDIATE: {
 			const char *dest_reg = REGISTERS[destination].c_str();

@@ -2,7 +2,13 @@
 #include "Scope.h"
 #include "Program.h"
 
-VariableDeclaration::VariableDeclaration(Scope *s) : Statement(s), type(s), name("") {}
+
+VariableDeclaration::VariableDeclaration(Scope *s) : Statement(s), name(""), type(s) {}
+
+
+VariableDeclaration::VariableDeclaration(Scope *s, Token&& look_ahead) : Statement(s), type(s, std::move(look_ahead)) {}
+
+
 
 Error VariableDeclaration::parse(Scanner *scanner) {
 	TRY(type.parse(scanner));

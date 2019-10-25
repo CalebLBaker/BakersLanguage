@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	const char *outfile_name = "out.s";
 	const char *infile_name = nullptr;
 	bool o_flag = false;
-	for (size_t i = 1; i < argc; i++) {
+	for (int i = 1; i < argc; i++) {
 		if (o_flag) {
 			outfile_name = argv[i];
 			o_flag = false;

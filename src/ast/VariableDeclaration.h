@@ -12,6 +12,12 @@ class VariableDeclaration : public Statement {
 
 public:
 	VariableDeclaration(Scope *s = nullptr);
+	
+	/** look-ahead constructor constructs a Variable Declaration with a look-ahead token
+	 * param s:          the owning scope
+	 * param look_ahead: first token to be consumed in parsing before scanner is consulted
+	 */
+	VariableDeclaration(Scope *s, Token&& look_ahead);
 
 	Error parse(Scanner *scanner);
 

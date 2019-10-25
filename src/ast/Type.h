@@ -29,6 +29,9 @@ public:
 	// Default constructor
 	Type(Scope *s = nullptr);
 
+	// Look ahead constructor
+	Type(Scope *s, Token&& look_ahead);
+
 	// Move constructor
 	Type(Type&& old);
 
@@ -52,6 +55,10 @@ public:
 	 * returns: an error flag indicating any error that might have occurred
 	 */
 	Error assignRegisters(std::vector<int64_t> *registers) const;
+
+private:
+
+	Token next_token;
 
 };
 

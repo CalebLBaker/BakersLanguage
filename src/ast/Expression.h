@@ -3,9 +3,10 @@
 
 
 #include "Error.h"
-#include "scan/Scanner.h"
 #include "SyntaxNode.h"
 #include "TypeDefinition.h"
+#include "codeGen/BasicBlock.h"
+#include "scan/Scanner.h"
 
 
 class Expression : public SyntaxNode {
@@ -23,6 +24,9 @@ class Expression : public SyntaxNode {
 		// Default constructor
 		Expression(Scope *s = nullptr);
 
+		// Look ahead constructor
+		Expression(Scope *s, Token&& look_ahead);
+
 		/**
 		 * parse parses the Expression from a scanner
 		 * param scanner: the scanner to parse from
@@ -36,6 +40,12 @@ class Expression : public SyntaxNode {
 		 * returns: an error object indicating any semantic errors in the expression
 		 */
 		Error doSemanticAnalysis();
+
+		Error codeGen(std::vector<BasicBlock> *blocks) const;
+
+	private:
+		
+		Token first_token;
 
 };
 

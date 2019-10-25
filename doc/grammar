@@ -4,7 +4,7 @@ FunctionDeclaration -> func ParameterList [ => Type ] IDENTIFIER CompoundStateme
 Type                -> { \[ \] | # } IDENTIFIER
 ParameterList       -> ( )
 CompoundStatement   -> \{ {Statement} \}
-Statement           -> CompoundStatement | return; | VariableDeclaration
+Statement           -> CompoundStatement | return; | VariableDeclaration | Expression ;
 VariableDeclaration -> Type IDENTIFIER [ = Expression ] ;
 ClassDeclaration    -> class IDENTIFIER \{ \}
 Expression          -> Identifier | STRING_LITERAL | SYSCALL ArgumentList | Expression . IDENTIFIER

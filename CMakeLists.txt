@@ -6,6 +6,8 @@ project(BakersLanguage VERSION 1.0)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
+add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Werror)
+
 add_library(blclib
 
 	src/Error.cpp
@@ -17,6 +19,7 @@ add_library(blclib
 	src/ast/Constant.cpp
 	src/ast/Declaration.cpp
 	src/ast/Expression.cpp
+	src/ast/ExpressionStatement.cpp
 	src/ast/FunctionDeclaration.cpp
 	src/ast/ParameterList.cpp
 	src/ast/Pointer.cpp
@@ -48,6 +51,7 @@ add_library(blclib
 	src/ast/Constant.h
 	src/ast/Declaration.h
 	src/ast/Expression.h
+	src/ast/ExpressionStatement.h
 	src/ast/FunctionDeclaration.h
 	src/ast/ParameterList.h
 	src/ast/Pointer.h

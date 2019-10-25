@@ -182,7 +182,7 @@ void Scanner::readNextToken() {
 						else if (!isspace(next_char)) {
 							state = IN_IDENTIFIER;
 							loc = location;
-							str += next_char;
+							str += (char)next_char;
 						}
 					}
 				}
@@ -305,12 +305,12 @@ void Scanner::readNextToken() {
 						case '\n': {
 							location.column_number = 0;
 							location.line_number++;
-							str += next_char;
+							str += (char)next_char;
 							break;
 						}
 						case '\t': {
 							location.column_number += (4 - location.column_number % 4);
-							str += next_char;
+							str += (char)next_char;
 							break;
 						}
 						case EOF: {
@@ -324,7 +324,7 @@ void Scanner::readNextToken() {
 						}
 						default: {
 							location.column_number++;
-							str += next_char;
+							str += (char)next_char;
 						}
 					}
 					break;
@@ -359,10 +359,10 @@ void Scanner::readNextToken() {
 					default: {
 						location.column_number++;
 						if (isdigit(next_char)) {
-							str += next_char - '0';
+							str += (char)(next_char - '0');
 						}
 						else {
-							str += next_char;
+							str += (char)next_char;
 						}
 					}
 				}
@@ -370,7 +370,7 @@ void Scanner::readNextToken() {
 				break;
 			}
 			case IN_IDENTIFIER: {
-				bool new_token = NON_ID_CHARS.find(next_char) != std::string::npos;
+				bool new_token = NON_ID_CHARS.find((char)next_char) != std::string::npos;
 				if (isspace(next_char) || new_token || next_char == EOF) {
 					ungetc(next_char, file);
 					next_token.location = loc;
@@ -393,7 +393,7 @@ void Scanner::readNextToken() {
 					return;
 				}
 				else {
-					str += next_char;
+					str += (char)next_char;
 					location.column_number++;
 				}
 			}

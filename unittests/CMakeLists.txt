@@ -29,6 +29,8 @@ endif()
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
+add_compile_options(-Wno-unused-parameter)
+
 # Now simply link against gtest_main
 add_executable(blcTest
 

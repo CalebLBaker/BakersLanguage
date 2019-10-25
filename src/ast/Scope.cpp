@@ -30,7 +30,6 @@ const VariableDeclaration* Scope::getVarDecl(const std::string *name) const {
 
 const TypeDefinition* Scope::getDefinition(const Type *type) {
 	Scope *n;
-	const TypeDefinition *base = nullptr;
 	const std::string *name = &type->name;
 	for (n = this; n != nullptr; n = n->owning_scope) {
 		auto *n_types = &n->types;

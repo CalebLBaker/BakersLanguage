@@ -6,10 +6,15 @@
 Expression::Expression(Scope *s) : SyntaxNode(s), type(nullptr) {}
 
 
+Expression::Expression(Scope *s, Token&& look_ahead) : SyntaxNode(s), type(nullptr), first_token(std::move(look_ahead)) {}
+
+
 Error Expression::parse(Scanner *scanner) {
-	Token next_token = scanner->getNextToken();
-	location = std::move(next_token.location);
-	switch (next_token.type) {
+	if (first_token.type == Token::ERROR) {
+		first_token = scanner->getNextToken();
+	}
+	location = std::move(first_token.location);
+	switch (first_token.type) {
 		case Token::IDENTIFIER: {
 			is_var = true;
 			break;
@@ -22,7 +27,7 @@ Error Expression::parse(Scanner *scanner) {
 			return Error(Error::UNEXPECTED_TOKEN, location);
 		}
 	}
-	str_value = std::move(*next_token.value.str_value);
+	str_value = std::move(*first_token.value.str_value);
 	return Error();
 }
 
@@ -43,4 +48,10 @@ Error Expression::doSemanticAnalysis() {
 	
 	return Error();
 }
+
+
+Error Expression::codeGen(std::vector<BasicBlock> *) const {
+	return Error();
+}
+
 

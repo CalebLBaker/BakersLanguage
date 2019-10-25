@@ -1,10 +1,11 @@
 #include "CompoundStatement.h"
+#include "ExpressionStatement.h"
 #include "VariableDeclaration.h"
 
 
 CompoundStatement::CompoundStatement(Scope *s) : Statement(s), statements() { } 
 
-CompoundStatement::CompoundStatement(CompoundStatement&& old) : Statement(std::move(old)), statements(std::move(old.statements)), local_scope(std::move(old.local_scope)), variables(std::move(old.variables))
+CompoundStatement::CompoundStatement(CompoundStatement&& old) : Statement(std::move(old)), statements(std::move(old.statements)), variables(std::move(old.variables)), local_scope(std::move(old.local_scope))
 {}
 
 
@@ -25,10 +26,26 @@ Error CompoundStatement::parse(Scanner *scanner) {
 				new_statement = (Statement*)new CompoundStatement(&local_scope);
 				break;
 			}
-			case Token::LEFT_BRACKET:
-			case Token::IDENTIFIER: {
+			case Token::INTEGER:
+			case Token::STRING_LITERAL:
+			case Token::SYSCALL: {
+				new_statement = new ExpressionStatement(&local_scope);
+				break;
+			}
+			case Token::LEFT_BRACKET: {
 				is_var_decl = true;
 				new_statement = (Statement*)new VariableDeclaration(&local_scope);
+				break;
+			}
+			case Token::IDENTIFIER: {
+				Token t = scanner->getNextToken();
+				if (next_token->type == Token::IDENTIFIER) {
+					is_var_decl = true;
+					new_statement = new VariableDeclaration(&local_scope, std::move(t));
+				}
+				else {
+					new_statement = new ExpressionStatement(&local_scope, std::move(t));
+				}
 				break;
 			}
 			default: {

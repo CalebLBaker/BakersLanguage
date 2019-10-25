@@ -5,7 +5,7 @@
 #include "Error.h"
 #include "Value.h"
 
-extern const size_t NUM_REAL_REGS;
+extern const int64_t NUM_REAL_REGS;
 //extern const std::string REGISTERS[NUM_REAL_REGS];
 
 // Instruction represents a single intermediate low-level instruction
