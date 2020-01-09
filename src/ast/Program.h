@@ -45,7 +45,7 @@ public:
 
 	/**
 	 * getNextSequenceNumber returns the next unused sequence number (used for generating unique
-	 * assemble labels). It is guarenteed to never return the same number twice in one program
+	 * assembly labels). It is guarenteed to never return the same number twice in one program
 	 * execution
 	 * returns: the next unused sequence number
 	 */
@@ -69,8 +69,6 @@ public:
 	static std::string getLabel(const std::string& value);
 
 private:
-	// function_list is a list of all functions in the global namespace
-	std::vector<FunctionDeclaration> function_list;
 
 	// code contains the intermediate low level code for all the functions in the program
 	std::vector<Function> code;

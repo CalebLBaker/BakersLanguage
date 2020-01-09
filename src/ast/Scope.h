@@ -57,7 +57,6 @@ private:
 
 extern Scope GLOBAL_SCOPE;
 extern const Primitive *UINT64;
-extern const Alias *UINT;
 
 
 #endif

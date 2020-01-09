@@ -1,0 +1,25 @@
+import "iterator"
+
+/**
+@summary
+Header String defines the Text interface and the String type, which implements that interface.
+*/
+
+namespace StdLib {
+
+	/**
+	@summary
+	RoText is an interface for a type that contains a sequence of contiguously stored bytes which
+	may be in read only memory.
+	*/
+	interface RoText {
+		implements RandomAccessIterable(#byte);
+	}
+
+	/**
+	@summary NEWLINE is the delimiter between lines in a text file
+	*/
+	#[]#byte NEWLINE = "\n";
+
+}
+         

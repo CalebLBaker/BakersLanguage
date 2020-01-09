@@ -3,7 +3,7 @@
 #include "VariableDeclaration.h"
 
 
-CompoundStatement::CompoundStatement(Scope *s) : Statement(s), statements() { } 
+CompoundStatement::CompoundStatement(Scope *s) : Statement(s), statements(), local_scope(s) { } 
 
 CompoundStatement::CompoundStatement(CompoundStatement&& old) : Statement(std::move(old)), statements(std::move(old.statements)), variables(std::move(old.variables)), local_scope(std::move(old.local_scope))
 {}

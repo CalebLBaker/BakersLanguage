@@ -13,13 +13,14 @@ VariableDeclaration::VariableDeclaration(Scope *s, Token&& look_ahead) : Stateme
 Error VariableDeclaration::parse(Scanner *scanner) {
 	TRY(type.parse(scanner));
 	Token next_token = scanner->getNextToken();
+	location = std::move(next_token.location);
 	if (next_token.type == Token::IDENTIFIER)
 	{
 		name = std::move(*next_token.value.str_value);
 	}
 	else
 	{
-		return Error(Error::EXPECTED_IDENTIFIER, std::move(next_token.location));
+		return Error(Error::EXPECTED_IDENTIFIER, std::move(location));
 	}
 	next_token = scanner->getNextToken();
 	switch (next_token.type) {
@@ -27,15 +28,19 @@ Error VariableDeclaration::parse(Scanner *scanner) {
 			return Error();
 		}
 		case Token::ASSIGNMENT_OPERATOR: {
-			initializer = std::make_unique<Expression>(scope);
-			TRY(initializer->parse(scanner));
+			TRY(Expression::parseExpression(scope, scanner, &initializer));
 			return scanner->matchNextToken(Token::SEMICOLON);
 		}
 		default: {
-			std::string message = "Unexpected token " + next_token.toString() + ". Expected \";\"";
+			std::string message = "Unexpected token " + next_token.toString() + ". Expected \";\"\n";
 			return Error(Error::UNEXPECTED_TOKEN, std::move(next_token.location), std::move(message));
 		}
 	}
+}
+
+
+const std::vector<int64_t>* VariableDeclaration::getRegisters() const {
+	return &registers;
 }
 
 
@@ -45,12 +50,15 @@ Error VariableDeclaration::doSemanticAnalysis() {
 		TRY(initializer->doSemanticAnalysis());
 	}
 	const TypeDefinition *lvalue_type = type.definition;
-	const TypeDefinition *rvalue_type = initializer->type;
+	if (initializer == nullptr) {
+		return Error();
+	}
+	const TypeDefinition *rvalue_type = initializer->getType();
 	if (lvalue_type->stripConst() == rvalue_type->stripConst()) {
 		return Error();
 	}
 	std::string message = "Cannot assign value of type " + rvalue_type->toString();
-	message += " to a variable of type " + lvalue_type->toString();
+	message += " to a variable of type " + lvalue_type->toString() + '\n';
 	return Error(Error::TYPE_MISMATCH, location, message);
 }
 
@@ -61,12 +69,11 @@ Error VariableDeclaration::assignRegisters() {
 
 
 Error VariableDeclaration::codeGen(std::vector<BasicBlock> *blocks) const {
-	BasicBlock *last_block = &blocks->back();
 	if (initializer == nullptr) {
 		return Error();
 	}
-	std::vector<int64_t>::const_iterator target = registers.cbegin();
-	std::vector<int64_t>::const_iterator end = registers.cend();
+	return initializer->codeGen(blocks, this);
+	/*
 	if (initializer->is_var) {
 		const VariableDeclaration *source_var = scope->getVarDecl(&initializer->str_value);
 		for (auto src = source_var->registers.cbegin(); target != end; target++, src++) {
@@ -81,6 +88,6 @@ Error VariableDeclaration::codeGen(std::vector<BasicBlock> *blocks) const {
 		size_t size = initializer->str_value.size();
 		last_block->addInstruction(Instruction(target[1], std::to_string(size)));
 	}
-	return Error();
+	*/
 }
 

@@ -19,23 +19,10 @@ Program::Program() : main(nullptr) {
 	GLOBAL_SCOPE.types.emplace("sint16", (TypeDefinition*)new Primitive("sint16", true, 2));
 	GLOBAL_SCOPE.types.emplace("sint32", (TypeDefinition*)new Primitive("sint32", true, 4));
 	GLOBAL_SCOPE.types.emplace("sint64", (TypeDefinition*)new Primitive("sint64", true, 8));
-	GLOBAL_SCOPE.types.emplace("uint", (TypeDefinition*)UINT);
-	TypeDefinition *char8  = new Primitive("char8", false, 1);
-	TypeDefinition *char_type = new Alias("char", char8);
-	TypeDefinition *const_char = new Constant(char_type);
-	Pointer *pointer_const_char = new Pointer(const_char);
-	TypeDefinition *slice_const_char = new Slice(pointer_const_char);
-	TypeDefinition *const_slice_const_char = new Constant(slice_const_char);
-	GLOBAL_SCOPE.types.emplace("char8", char8);
-	GLOBAL_SCOPE.types.emplace("char", char_type);
-	GLOBAL_SCOPE.types.emplace("#char", const_char);
-	GLOBAL_SCOPE.types.emplace("&#char", pointer_const_char);
-	GLOBAL_SCOPE.types.emplace("[]#char", slice_const_char);
-	GLOBAL_SCOPE.types.emplace("#[]#char", const_slice_const_char);
 }
 
 
-Program::Program(Program&& old) : SyntaxNode(std::move(old)), function_list(std::move(old.function_list)), code(std::move(old.code)), main(old.main) {}
+Program::Program(Program&& old) : SyntaxNode(std::move(old)), code(std::move(old.code)), main(old.main) {}
 
 
 Error Program::parse(Scanner *scanner) {
@@ -61,7 +48,7 @@ Error Program::parse(Scanner *scanner) {
 			}
 			default: {
 				std::string message = "Unexpected token \"" + next_token->toString();
-				message.append("\" found in global scope.");
+				message.append("\" found in global scope.\n");
 				return Error(Error::UNEXPECTED_TOKEN, next_token->location, message);
 			}
 		}
@@ -114,7 +101,7 @@ Error Program::printCode(FILE *file) {
 			while (true) {
 				if (!isEscapeSequence(*i)) {
 					fputc('\"', file);
-					while (!isEscapeSequence(*i)) {
+					while (i != end && !isEscapeSequence(*i)) {
 						fputc(*i, file);
 						i++;
 					}

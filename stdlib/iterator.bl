@@ -1,0 +1,93 @@
+/**
+@summary
+header iterator defines interfaces for different types of iterators and iterable containers.
+*/
+
+namespace StdLib {
+
+	/**
+	@summary
+	Iterator provides an iterface describing a type that can be used to access elements in a range
+	@param ValueType
+	The Type of data returned from dereferencing the iterator
+	*/
+	func(Type ValueType) -> interface Iterator = interface {
+		implements Incrementable;
+		implements Dereferencable(ValueType);
+		implements Comparable(Self);
+	}
+
+	/**
+	@summary
+	BidirectionalIterator provides an interface describing an iterator that can move both forwards
+	and backwards
+	@param ValueType
+	The Type of data returned from dereferencing the iterator
+	*/
+	func(Type ValueType) -> interface BidirectionalIterator = interface {
+		implements Iterator(ValueType);
+		implements Decrementable;
+	}
+
+	/**
+	@summary
+	RandomAccessIterator provides an interface describing an iterator that can be indexed off of
+	to provide random access to elements past the one that is pointed at
+	@param ValueType
+	The Type of data returned from dereferencing the iterator
+	*/
+	func(Type ValueType) -> interface RandomAccessIterator = interface {
+		implements BidirectionalIterator(ValueType);
+		implements Addable(int);
+		implements Subtractable(int, Self);
+		implements Subtractable(Self, int);
+	}
+
+	/**
+	@summary
+	RandomAccessIterable provides an interface describing containers and ranges that can be
+	iterated over using random access iterators. These types typically store elements contiguously
+	in memory as arrays.
+	@param ValueType
+	The Type of data held in the container or range
+	*/
+	func(Type ValueType) -> interface RandomAccessIterable = interface {
+		with IteratorType as RandomAccessIterator(ValueType) {
+			implements Range(IteratorType);
+		}
+
+		/**
+		@summary size retrieves the number of element in the container or range
+		@returns the number of elements in the container or range
+		*/
+		overload func[Self]() -> uint size = end() - begin();
+	}
+
+	/**
+	@summary
+	Range provides an interface describing iterator ranges.
+	@param IteratorType
+	The type of iterator used to iterate over the range
+	*/
+	func(Type IteratorType) -> interface Range = interface {
+
+		/**
+		@summary
+		begin provides an iterator to the first element of the range
+		@returns
+		an iterator to the first element in the range
+		*/
+		func[Self]() -> IteratorType begin;
+
+		/**
+		@summary
+		end provides an iterator that will compare as equal to the iterator that results from
+		incrementing an iterator to the last element of the range
+		@returns
+		an iterator to one past the last element of the range
+		*/
+		func[Self]() -> IteratorType end;
+	}
+
+}
+

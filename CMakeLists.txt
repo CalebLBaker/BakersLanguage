@@ -21,6 +21,7 @@ add_library(blclib
 	src/ast/Expression.cpp
 	src/ast/ExpressionStatement.cpp
 	src/ast/FunctionDeclaration.cpp
+	src/ast/LiteralExpression.cpp
 	src/ast/ParameterList.cpp
 	src/ast/Pointer.cpp
 	src/ast/Primitive.cpp
@@ -29,10 +30,12 @@ add_library(blclib
 	src/ast/Slice.cpp
 	src/ast/Statement.cpp
 	src/ast/SyntaxNode.cpp
+	src/ast/SyscallExpression.cpp
 	src/ast/Type.cpp
 	src/ast/TypeDefinition.cpp
 	src/ast/TypeModifier.cpp
 	src/ast/VariableDeclaration.cpp
+	src/ast/VariableExpression.cpp
 
 	src/codeGen/BasicBlock.cpp
 	src/codeGen/Function.cpp
@@ -53,6 +56,7 @@ add_library(blclib
 	src/ast/Expression.h
 	src/ast/ExpressionStatement.h
 	src/ast/FunctionDeclaration.h
+	src/ast/LiteralExpression.h
 	src/ast/ParameterList.h
 	src/ast/Pointer.h
 	src/ast/Primitive.h
@@ -61,10 +65,12 @@ add_library(blclib
 	src/ast/Slice.h
 	src/ast/Statement.h
 	src/ast/SyntaxNode.h
+	src/ast/SyscallExpression.h
 	src/ast/Type.h
 	src/ast/TypeDefinition.h
 	src/ast/TypeModifier.h
 	src/ast/VariableDeclaration.h
+	src/ast/VariableExpression.h
 
 	src/codeGen/BasicBlock.h
 	src/codeGen/Function.h

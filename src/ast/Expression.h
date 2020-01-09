@@ -1,6 +1,7 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
+#include <memory>
 
 #include "Error.h"
 #include "SyntaxNode.h"
@@ -8,44 +9,35 @@
 #include "codeGen/BasicBlock.h"
 #include "scan/Scanner.h"
 
+class VariableDeclaration;
+
 
 class Expression : public SyntaxNode {
 	public:
 
-		// The type of the resulting value of the expression
-		const TypeDefinition *type;
+		Expression(Scope *s);
 
-		// Name of the variable or value of the string literal
-		std::string str_value;
+		static Expression* NewExpression(Scope *s, const Token& look_ahead);
 
-		// Indicates whether the expression is is a variable or just a literal
-		bool is_var;
+		static Error parseExpression(Scope *scope, Scanner *scanner, std::unique_ptr<Expression> *expr);
 
-		// Default constructor
-		Expression(Scope *s = nullptr);
-
-		// Look ahead constructor
-		Expression(Scope *s, Token&& look_ahead);
+		virtual const TypeDefinition* getType() = 0;
 
 		/**
 		 * parse parses the Expression from a scanner
 		 * param scanner: the scanner to parse from
 		 * returns: an error object indicating any syntax errors that occurred in parsing
 		 */
-		Error parse(Scanner *scanner);
+		virtual Error parse(Scanner *scanner, Token&& look_ahead) = 0;
 
 		/**
 		 * doSemanticAnalysis analayzes the expression for semantic errors and annotates it with
 		 * type information
 		 * returns: an error object indicating any semantic errors in the expression
 		 */
-		Error doSemanticAnalysis();
+		virtual Error doSemanticAnalysis() = 0;
 
-		Error codeGen(std::vector<BasicBlock> *blocks) const;
-
-	private:
-		
-		Token first_token;
+		virtual Error codeGen(std::vector<BasicBlock> *blocks, const VariableDeclaration *var = nullptr) const = 0;
 
 };
 

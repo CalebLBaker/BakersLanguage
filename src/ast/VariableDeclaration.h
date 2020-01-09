@@ -37,6 +37,8 @@ public:
 
 	Error codeGen(std::vector<BasicBlock> *blocks) const;
 
+	const std::vector<int64_t>* getRegisters() const;
+
 private:
 	std::unique_ptr<Expression> initializer;
 	std::vector<int64_t> registers;

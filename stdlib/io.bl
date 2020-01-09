@@ -1,0 +1,93 @@
+/**
+@summary
+Header io provides classes and functions for input and output operations
+*/
+
+import String
+import Error
+
+namespace StdLib {
+
+	/**
+	@summary
+	Writer is an interface for a type that can write sequences of bytes to a destination.
+	The destination can be a file, a device, memory, or anything else you can write bytes to.
+	*/
+	interface Writer {
+
+		/**
+		@summary
+		print writes a string
+		@param str
+		the string to print
+		@returns
+		An errno object indicating whether any errors occurred
+		*/
+		func(RoText str) -> errno print;
+
+		/**
+		@summary
+		println writes a string with a newline appended to the end
+		@param str
+		the string to print
+		@returns
+		An errno object indicating whether any errors occurred
+		*/
+		overload func(RoText str) -> errno println {
+			try(print(str));
+			return print(NEWLINE);
+		}
+	}
+
+	/**
+	@summary
+	BasicWriter is a simple implementation of the Writer interface that writes to a file
+	descripter. Typically, no stdout and stderr are the only instantiations of BasicWriter that
+	are necessary
+	*/
+	class BasicWriter {
+
+		private #int fileDescriptor;
+
+		/**
+		@summary
+		constructs a BasicWriter that writes to a specific file descripter.
+		@param descriptor
+		the file descriptor to write to
+		*/
+		func(int descriptor) {
+			fileDescriptor = descriptor;
+		}
+
+		/**
+		@summary
+		print writes a string
+		@param str
+		the string to print
+		@returns
+		An errno object indicating whether any errors occurred
+		*/
+		func(RoText str) -> errno print {
+			uint len = str.size();
+			int result = SYSCALL(1, fileDescriptor, str.begin(), len);
+			if (result == len) {
+				return SUCCESS;
+			}
+			else if  (result == -1) {
+				return FAILED_WRITE;
+			}
+			else {
+				return INCOMPLETE_WRITE;
+			}
+		}
+
+	}
+
+	/**
+	@summary
+	stdout is a BasicWriter that writes to the standard output
+	*/
+	BasicWriter stdout(1);
+
+}
+

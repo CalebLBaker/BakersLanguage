@@ -1,0 +1,35 @@
+/**
+@summary
+Header Error provides some basic types that implement the Error interface
+*/
+
+namespace StdLib {
+
+	/**
+	@summary errno is a type that represents integer error codes
+	*/
+	typedef int errno;
+
+	/**
+	@summary ok checks whether an errno evaluates to SUCCESS.
+	@returns true if the errno is equal to SUCCESS.
+	*/
+	func[errno]() -> bool ok = this == SUCCESS;
+
+	/**
+	@summary used to represent success; i.e. no error occurred
+	*/
+	#errno SUCCESS = 0;
+
+	/**
+	@summary used when a write operation fails to write
+	*/
+	#errno FAILED_WRITE = 1;
+
+	/**
+	@summary used when a write operation writes less bytes than it was expected to write
+	*/
+	#errno INCOMPLETE_WRITE = 2;
+
+}
+

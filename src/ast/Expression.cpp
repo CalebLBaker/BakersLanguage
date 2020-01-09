@@ -1,57 +1,37 @@
 #include "Expression.h"
-#include "Scope.h"
-#include "Program.h"
+
+#include "LiteralExpression.h"
+#include "SyscallExpression.h"
+#include "VariableExpression.h"
 
 
-Expression::Expression(Scope *s) : SyntaxNode(s), type(nullptr) {}
+Expression::Expression(Scope *s) : SyntaxNode(s) {}
 
 
-Expression::Expression(Scope *s, Token&& look_ahead) : SyntaxNode(s), type(nullptr), first_token(std::move(look_ahead)) {}
-
-
-Error Expression::parse(Scanner *scanner) {
-	if (first_token.type == Token::ERROR) {
-		first_token = scanner->getNextToken();
-	}
-	location = std::move(first_token.location);
-	switch (first_token.type) {
+Expression* Expression::NewExpression(Scope *s, const Token& look_ahead) {
+	switch (look_ahead.type) {
 		case Token::IDENTIFIER: {
-			is_var = true;
-			break;
+			return new VariableExpression(s);
 		}
 		case Token::STRING_LITERAL: {
-			is_var = false;
-			break;
+			return new LiteralExpression(s);
+		}
+		case Token::SYSCALL: {
+			return new SyscallExpression(s);
 		}
 		default: {
-			return Error(Error::UNEXPECTED_TOKEN, location);
+			return nullptr;
 		}
 	}
-	str_value = std::move(*first_token.value.str_value);
-	return Error();
 }
 
 
-Error Expression::doSemanticAnalysis() {
-	if (is_var) {
-		const VariableDeclaration *var_decl = scope->getVarDecl(&str_value);
-		if (var_decl == nullptr) {
-			std::string message = "Variable \"" + str_value + "\" does not exist at this scope.";
-			return Error(Error::UNDECLARED_VARIABLE, location, message);
-		}
-		type = var_decl->type.definition;
+Error Expression::parseExpression(Scope *s, Scanner *scanner, std::unique_ptr<Expression> *expr) {
+	Token first_token = scanner->getNextToken();
+	expr->reset(NewExpression(s, first_token));
+	if (*expr == nullptr) {
+		return Error(Error::UNEXPECTED_TOKEN, first_token.location);
 	}
-	else {
-		Program::addStringLiteral(str_value);
-		type = GLOBAL_SCOPE.types["#[]#char"].get();
-	}
-	
-	return Error();
+	return (*expr)->parse(scanner, std::move(first_token));
 }
-
-
-Error Expression::codeGen(std::vector<BasicBlock> *) const {
-	return Error();
-}
-
 

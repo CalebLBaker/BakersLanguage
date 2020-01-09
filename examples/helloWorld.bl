@@ -1,0 +1,6 @@
+import "io"
+
+func() main {
+	StdLib.stdout.println("Hello, world!");
+}
+

@@ -7,7 +7,9 @@
 
 Scope GLOBAL_SCOPE;
 const Primitive *UINT64 = new Primitive("uint64", false, 8);
+const Primitive *INT64 = new Primitive("int64", true, 8);
 const Alias *UINT = new Alias("uint", UINT64);
+const Alias *INT = new Alias("int", INT64);
 
 
 Scope::Scope(Scope *s) : owning_scope(s) {}

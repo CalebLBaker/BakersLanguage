@@ -3,6 +3,9 @@
 
 
 #include "Expression.h"
+
+#include <memory>
+
 #include "Statement.h"
 
 
@@ -28,7 +31,7 @@ class ExpressionStatement : public Statement {
 	
 	private:
 
-		Expression expr;
+		std::unique_ptr<Expression> expr;
 };
 
 
