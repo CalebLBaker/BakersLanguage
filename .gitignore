@@ -1,6 +1,6 @@
 build
-blc
-blc.dbg
+quartzc
+quartzc.dbg
 out.s
 out.elf
 

@@ -1,8 +1,0 @@
-func() main {
-	print("Hello, world!\n");
-}
-
-func([]#char str) print {
-	SYSCALL(1, 1, str.data, str.size);
-}
-

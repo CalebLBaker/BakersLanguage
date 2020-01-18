@@ -13,7 +13,7 @@ public:
  	 * Scanner constructs a Scanner object that will get symbols from a specified file.
 	 * param infile_name: The name of the file that the Scanner will read symbols from
 	 */
-	Scanner(const char *infile_name);
+	Scanner(std::string_view infile_name);
 
 	// Move constructor
 	Scanner(Scanner&& old);

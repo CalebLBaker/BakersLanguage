@@ -4,8 +4,8 @@
 const std::string Scanner::NON_ID_CHARS = "(){};=>[],.+-";
 
 
-Scanner::Scanner(const char *infile_name) : location(std::string(infile_name), 1, 0) {
-	file = fopen(infile_name, "r");
+Scanner::Scanner(std::string_view infile_name) : location(infile_name, 1, 0) {
+	file = fopen(infile_name.data(), "r");
 	if (file != nullptr) {
 		readNextToken();
 	}

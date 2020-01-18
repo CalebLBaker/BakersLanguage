@@ -1,4 +1,0 @@
-func() main {
-	[]#char str = "Hello, world!\n";
-	SYSCALL(1, 1, str.data, str.size);
-}

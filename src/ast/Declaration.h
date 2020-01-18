@@ -1,23 +1,35 @@
 #ifndef DECLARATION_H
 #define DECLARATION_H
 
-#include "SyntaxNode.h"
+
+#include <memory>
+
+#include "Error.h"
+#include "Expression.h"
+#include "Initializer.h"
+#include "Statement.h"
 #include "scan/Scanner.h"
 
-// Declaration represents a Declaration in the Abstract Syntax Tree
-class Declaration : public SyntaxNode {
 
+class Declaration : public Statement {
 public:
 
-	// Default constructor
-	Declaration(Scope *s = nullptr);
+	Declaration(Scope *pScope);
 
-	/**
-	 * parse populates the Declaration by parsing tokens from a scanner
-	 * param scanner: the scanner to parse tokens from
-	 * returns:       an Error object indicating the success status of the parse operation
-	 */
-	virtual Error parse(Scanner *scanner) = 0;
+	Error parse(Scanner *pScanner);
+
+	Error doSemanticAnalysis();
+
+	std::string_view getName() const;
+
+	Error genCode();
+
+private:
+	std::unique_ptr<Expression> mpType;
+	std::string mName;
+	std::unique_ptr<Initializer> mpInitializer;
 };
 
+
 #endif
+

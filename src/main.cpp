@@ -1,5 +1,7 @@
 #include <cstdio>
+
 #include "ast/Program.h"
+#include "codeGen/CodeGen.h"
 
 const int USAGE_ERROR = -1;
 const int IO_ERROR = -2;
@@ -24,7 +26,7 @@ const int CODE_GEN_ERROR = -5;
 int main(int argc, char **argv) {
 
 	// Process command line arguments
-	const char *outfile_name = "out.s";
+	const char *outfile_name = "out.ll";
 	const char *infile_name = nullptr;
 	bool o_flag = false;
 	for (int i = 1; i < argc; i++) {
@@ -59,7 +61,7 @@ int main(int argc, char **argv) {
 
 	// Scan and parse
 	Program ast;
-	Error err = ast.parse(&scanner);
+	Error err = ast.parse(infile_name);
 	if (!err.ok()) {
 		fprintf(stderr, "%s", err.toString().c_str());
 		fprintf(stderr, err.location.getLine().c_str());
@@ -86,27 +88,12 @@ int main(int argc, char **argv) {
 		fprintf(stderr, err.location.getLine().c_str());
 		return CODE_GEN_ERROR;
 	}
+	CodeGen::setModuleName(outfile_name);
+	CodeGen::setSourceFilename(infile_name);
 
-	// Open output file
-	FILE *outfile = fopen(outfile_name, "w");
-	if (outfile == nullptr) {
-		fprintf(stderr, "%s:0:0: error: cannot open file for writing\n", outfile_name);
-		return IO_ERROR;
-	}
-
-	// Write code to file
-	err = ast.printCode(outfile);
-	if (!err.ok()) {
-		fprintf(stderr, "%s", err.toString().c_str());
-		fprintf(stderr, err.location.getLine().c_str());
-		return CODE_GEN_ERROR;
-	}
-
-	// Close output file
-	if (fclose(outfile) != 0) {
-		fprintf(stderr, "%s:0:0: warning: error closing file\n", outfile_name);
-		return IO_ERROR;
-	}
+	// Print code
+	CodeGen::printCode(outfile_name);
 
 	return 0;
+
 }

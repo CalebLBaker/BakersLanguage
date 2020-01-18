@@ -1,5 +1,5 @@
 #include "Statement.h"
 
 
-Statement::Statement(Scope *s) : SyntaxNode(s) {}
+Statement::Statement(Scope *pScope) : SyntaxNode(pScope) {}
 

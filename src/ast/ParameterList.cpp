@@ -1,17 +1,13 @@
 #include "ParameterList.h"
 
 
-ParameterList::ParameterList(Scope *s) : SyntaxNode(s) {}
+ParameterList::ParameterList(Scope *pScope) : SyntaxNode(pScope) {}
 
 
-Error ParameterList::parse(Scanner *scanner) {
-	Error result = scanner->matchNextToken(Token::LEFT_PAREN);
-	location = result.location;
-	if (!result.ok()) {
-		return result;
-	}
-	result = scanner->matchNextToken(Token::RIGHT_PAREN);
-	return result;
+Error ParameterList::parse(Scanner *pScanner) {
+	location = pScanner->next_token.location;
+	TRY(pScanner->matchNextToken(Token::LEFT_PAREN));
+	return pScanner->matchNextToken(Token::RIGHT_PAREN);
 }
 
 
