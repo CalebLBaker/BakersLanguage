@@ -26,7 +26,7 @@ const int CODE_GEN_ERROR = -5;
 int main(int argc, char **argv) {
 
 	// Process command line arguments
-	const char *outfile_name = "out.ll";
+	const char *outfile_name = "a.out";
 	const char *infile_name = nullptr;
 	bool o_flag = false;
 	for (int i = 1; i < argc; i++) {
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 	CodeGen::setSourceFilename(infile_name);
 
 	// Print code
-	CodeGen::printCode(outfile_name);
+	CodeGen::createExecutable(outfile_name);
 
 	return 0;
 

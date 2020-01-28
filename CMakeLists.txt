@@ -64,7 +64,7 @@ add_library(quartzlib
 
 set_property(TARGET quartzlib PROPERTY CXX_STANDARD 20)
 
-llvm_config(quartzlib core)
+target_link_libraries(quartzlib LLVM lldELF)
 
 add_executable (quartzc src/main.cpp)
 
