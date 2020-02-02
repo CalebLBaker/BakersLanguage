@@ -10,6 +10,11 @@ namespace CodeGen {
 	extern llvm::LLVMContext context;
 	extern llvm::Module codeModule;
 
+	enum FileType {
+		ASSEMBLY,
+		EXECUTABLE
+	};
+
 	void newFunction(std::string_view name);
 
 	inline void setModuleName(std::string_view name) {
@@ -20,7 +25,7 @@ namespace CodeGen {
 		codeModule.setSourceFileName(llvm::StringRef(name.data(), name.size()));
 	}
 
-	void createExecutable(std::string_view filename);
+	void generateOutput(FileType type, std::string_view filename);
 
 }
 

@@ -32,7 +32,7 @@ public:
 	 * param scanner: the name of the file to parse
 	 * returns:       an error object indicating any syntax error that may have occurred
 	 */
-	Error parse(const std::string& filename);
+	Error parse(std::string_view filename);
 
 	/**
 	 * doSemanticAnalysis performs semantic analysis on the program

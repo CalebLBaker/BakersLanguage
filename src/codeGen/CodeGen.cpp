@@ -30,7 +30,7 @@ namespace CodeGen {
 		builder.CreateRetVoid();
 	}
 
-	void createExecutable(std::string_view filename) {
+	void generateOutput(FileType type, std::string_view filename) {
 
 		// Add inline assembly to call main
 		codeModule.appendModuleInlineAsm(
@@ -42,6 +42,7 @@ namespace CodeGen {
 		llvm::InitializeAllTargetMCs();
 		llvm::InitializeAllAsmParsers();
 		llvm::InitializeAllAsmPrinters();
+
 		std::string triple = llvm::sys::getDefaultTargetTriple();
 		std::string error;
 		const llvm::Target *pTarget = llvm::TargetRegistry::lookupTarget(triple, error);
@@ -51,23 +52,26 @@ namespace CodeGen {
 		llvm::TargetOptions options;
 		llvm::Optional<llvm::Reloc::Model> relocationModel;
 
-		std::unique_ptr<llvm::TargetMachine> pTargetMachine(pTarget->createTargetMachine(
-			triple, cpu, features, options, relocationModel
-		));
+		std::unique_ptr<llvm::TargetMachine> pTargetMachine(pTarget->createTargetMachine(triple, cpu, features, options, relocationModel));
 
 		codeModule.setDataLayout(pTargetMachine->createDataLayout());
 
-		std::error_code errorCode;
-		llvm::raw_fd_ostream output("tmp.o", errorCode, llvm::sys::fs::OF_None);
-		llvm::legacy::PassManager passManager;
-		pTargetMachine->addPassesToEmitFile(
-			passManager, output, nullptr, llvm::TargetMachine::CGFT_ObjectFile
-		);
-		passManager.run(codeModule);
-		output.flush();
-
-		lld::elf::link({"lld", "tmp.o", "-o", filename.data()}, false);
-		remove("tmp.o");
+		if (type == ASSEMBLY) {
+			std::error_code errorCode;
+			llvm::raw_fd_ostream output(filename.data(), errorCode, llvm::sys::fs::OF_Text);
+			llvm::legacy::PassManager passManager;
+			pTargetMachine->addPassesToEmitFile(passManager, output, nullptr, llvm::TargetMachine::CGFT_AssemblyFile);
+			passManager.run(codeModule);
+		}
+		else if (type == EXECUTABLE) {
+			std::error_code errorCode;
+			llvm::raw_fd_ostream output("tmp.o", errorCode, llvm::sys::fs::OF_Text);
+			llvm::legacy::PassManager passManager;
+			pTargetMachine->addPassesToEmitFile(passManager, output, nullptr, llvm::TargetMachine::CGFT_ObjectFile);
+			passManager.run(codeModule);
+			lld::elf::link({"lld", "tmp.o", "-o", filename.data()}, false);
+			remove("tmp.o");
+		}
 	}
 }
 
