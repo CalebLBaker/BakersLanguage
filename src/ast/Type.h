@@ -1,3 +1,7 @@
+#ifndef TYPE_H
+#define TYPE_H
+
+
 #include <memory>
 #include <unordered_set>
 
@@ -10,6 +14,7 @@ public:
 		TC_FUNCTION
 	};
 	static const Type *TYPE;
+	static const Type *UINT8;
 	Type(Category category);
 	Type(Type&& old) : mCategory(old.mCategory) {}
 	Category getCategory() const;
@@ -37,4 +42,5 @@ private:
 };
 
 
+#endif
 

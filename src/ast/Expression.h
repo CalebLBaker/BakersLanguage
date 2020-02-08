@@ -17,6 +17,9 @@ public:
 	virtual Error doSemanticAnalysis() = 0;
 	virtual const Type* getTypeValue() = 0;
 	const Type* getType() const;
+	static bool inFirstSet(Token::TokenType type) {
+		return type == Token::FUNC || type == Token::IDENTIFIER;
+	}
 protected:
 	const Type *mpType;
 };

@@ -20,10 +20,12 @@ class Program : public SyntaxNode {
 
 public:
 
-/*
 	// Program constructs a Program object that includes the type definitions for built-in types
-	Program();
+	inline Program() :
+		SyntaxNode(nullptr), mProgramScope(nullptr), UINT8("uint8", Type::UINT8, &mProgramScope)
+	{}
 
+/*
 	// Move constructor
 	Program(Program&& old);
 
@@ -75,6 +77,10 @@ public:
 private:
 
 	std::unordered_map<std::string, Module> mModules;
+	
+	Scope mProgramScope;
+
+	const Declaration UINT8;
 
 /*
 	// code contains the intermediate low level code for all the functions in the program

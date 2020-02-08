@@ -4,10 +4,14 @@
 
 #include "SyntaxNode.h"
 
+#include "Error.h"
+
 
 class Statement : public SyntaxNode {
 public:
 	Statement(Scope *pScope);
+	virtual ~Statement();
+	virtual Error doSemanticAnalysis() = 0;
 };
 
 

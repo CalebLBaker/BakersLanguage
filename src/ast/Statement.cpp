@@ -3,3 +3,6 @@
 
 Statement::Statement(Scope *pScope) : SyntaxNode(pScope) {}
 
+
+Statement::~Statement() {}
+

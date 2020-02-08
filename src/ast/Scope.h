@@ -4,14 +4,20 @@
 
 #include <unordered_map>
 
-#include "Declaration.h"
+#include "Error.h"
+
+
+class Declaration;
 
 
 class Scope {
 public:
+	inline Scope(Scope *pOwningScope) : mpOwningScope(pOwningScope) {}
 	Error addVariable(Declaration *pDecl);
+	const Declaration* getVariable(std::string_view name);
 private:
 	std::unordered_map<std::string_view, Declaration*> mVariables;
+	Scope *mpOwningScope;
 };
 
 

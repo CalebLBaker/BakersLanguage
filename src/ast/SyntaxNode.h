@@ -21,8 +21,6 @@ public:
 	// Move constructor
 	SyntaxNode(SyntaxNode&& old);
 
-protected:
-
 	Scope *scope;
 
 };

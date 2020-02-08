@@ -1,7 +1,10 @@
 #include "Type.h"
 
+#include "Primitive.h"
+
 
 const Type* Type::TYPE = new Type(TC_TYPE);
+const Type *Type::UINT8 = new Primitive();
 
 std::unordered_set<const Type*, Type::Hasher, Type::Comparator> Type::mAllTypes;
 

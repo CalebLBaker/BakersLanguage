@@ -14,6 +14,8 @@
 class Module : SyntaxNode {
 public:
 
+	inline Module(Scope *pOwningScope) : SyntaxNode(pOwningScope), mScope(pOwningScope) {}
+
 	Error parse(Scanner *pScanner);
 
 	Error doSemanticAnalysis();

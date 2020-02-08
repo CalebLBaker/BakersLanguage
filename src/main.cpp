@@ -152,7 +152,8 @@ int main(int argc, char **argv) {
 
 	// Set module name and such
 	std::filesystem::path inpath = infile;
-	CodeGen::setModuleName(inpath.filename().c_str());
+	inpath = inpath.filename();
+	CodeGen::setModuleName(inpath.c_str());
 	CodeGen::setSourceFilename(infile);
 
 	// Generate an outfile name if none was provided

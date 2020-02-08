@@ -7,12 +7,10 @@
 Error Expression::NewExpression(Scanner *pScanner, Scope *pScope, std::unique_ptr<Expression> *pOut) {
 	Token::TokenType type = pScanner->next_token.type;
 	switch (type) {
-		/*
 		case Token::IDENTIFIER: {
 			pOut->reset(new VariableExpression(pScope));
 			break;
 		}
-		*/
 		case Token::FUNC: {
 			pOut->reset(new FunctionTypeExpression(pScope));
 			break;

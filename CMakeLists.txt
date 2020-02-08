@@ -21,11 +21,13 @@ add_library(quartzlib
 	src/ast/CompoundStatement.h
 	src/ast/Declaration.h
 	src/ast/Expression.h
+	src/ast/ExpressionStatement.h
 	src/ast/FunctionType.h
 	src/ast/FunctionTypeExpression.h
 	src/ast/Initializer.h
 	src/ast/Module.h
 	src/ast/ParameterList.h
+	src/ast/Primitive.h
 	src/ast/Program.h
 	src/ast/Scope.h
 	src/ast/Statement.h
@@ -44,11 +46,13 @@ add_library(quartzlib
 	src/ast/CompoundStatement.cpp
 	src/ast/Declaration.cpp
 	src/ast/Expression.cpp
+	src/ast/ExpressionStatement.cpp
 	src/ast/FunctionType.cpp
 	src/ast/FunctionTypeExpression.cpp
 	src/ast/Initializer.cpp
 	src/ast/Module.cpp
 	src/ast/ParameterList.cpp
+	src/ast/Primitive.cpp
 	src/ast/Program.cpp
 	src/ast/Scope.cpp
 	src/ast/Statement.cpp
