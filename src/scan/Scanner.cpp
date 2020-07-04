@@ -386,6 +386,9 @@ void Scanner::readNextToken() {
 					else if (str == "SYSCALL") {
 						next_token.setType(Token::SYSCALL);
 					}
+					else if (str == "@entry") {
+						next_token.setType(Token::ENTRY);
+					}
 					else {
 						next_token.setType(Token::IDENTIFIER);
 						next_token.setStringValue(str);

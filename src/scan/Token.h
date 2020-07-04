@@ -32,6 +32,7 @@ public:
 		DOT,
 		ADD,
 		SUBTRACT,
+		ENTRY,
 		ERROR
 	};
 

@@ -3,13 +3,12 @@
 #include "Primitive.h"
 
 
-const Type* Type::TYPE = new Type(TC_TYPE);
-const Type *Type::UINT8 = new Primitive();
+const Type *Type::TYPE;
+const Type *Type::UINT8;
+const Type *Type::INT64;
+const Type *Type::INT;
 
 std::unordered_set<const Type*, Type::Hasher, Type::Comparator> Type::mAllTypes;
-
-
-Type::Type(Type::Category category) : mCategory(category) {}
 
 
 Type::Category Type::getCategory() const {
@@ -50,5 +49,12 @@ size_t Type::Hasher::operator()(const Type *pValue) const {
 
 bool Type::Comparator::operator()(const Type *pLhs, const Type *pRhs) const {
 	return pLhs->equal(*pRhs);
+}
+
+void Type::initializePrimitives() {
+	TYPE = new Type(TC_TYPE);
+	UINT8 = new Primitive(1, Primitive::UNSIGNED);
+	INT64 = new Primitive(8, Primitive::SIGNED);
+	INT = INT64;
 }
 

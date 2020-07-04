@@ -124,8 +124,7 @@ int main(int argc, char **argv) {
 	Program ast;
 	Error err = ast.parse(infile);
 	if (!err.ok()) {
-		fprintf(stderr, "%s", err.toString().c_str());
-		fprintf(stderr, err.location.getLine().c_str());
+		err.print(stderr);
 		return SYNTAX_ERROR;
 	}
 
@@ -137,16 +136,14 @@ int main(int argc, char **argv) {
 	// Semantic analysis
 	err = ast.doSemanticAnalysis();
 	if (!err.ok()) {
-		fprintf(stderr, "%s", err.toString().c_str());
-		fprintf(stderr, err.location.getLine().c_str());
+		err.print(stderr);
 		return SEMANTIC_ERROR;
 	}
 
 	// Intermedate low level code generation
 	err = ast.genCode();
 	if (!err.ok()) {
-		fprintf(stderr, "%s", err.toString().c_str());
-		fprintf(stderr, err.location.getLine().c_str());
+		err.print(stderr);
 		return CODE_GEN_ERROR;
 	}
 

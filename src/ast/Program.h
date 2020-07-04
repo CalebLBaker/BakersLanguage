@@ -22,14 +22,21 @@ public:
 
 	// Program constructs a Program object that includes the type definitions for built-in types
 	inline Program() :
-		SyntaxNode(nullptr), mProgramScope(nullptr), UINT8("uint8", Type::UINT8, &mProgramScope)
-	{}
+		SyntaxNode(nullptr), mProgramScope(nullptr), UINT8("uint8", &mProgramScope)
+	{
+		Type::initializePrimitives();
+		UINT8.setTypeValue(Type::UINT8);
+	}
 
 /*
 	// Move constructor
 	Program(Program&& old);
+	*/
 
-	/ **
+	// Tell the compiler that we intentionally overload the parse function
+	using SyntaxNode::parse;
+
+	/**
 	 * parse parses the program
 	 * param scanner: the name of the file to parse
 	 * returns:       an error object indicating any syntax error that may have occurred
@@ -40,7 +47,7 @@ public:
 	 * doSemanticAnalysis performs semantic analysis on the program
 	 * returns: an error object indicating any semantic errors that may have occurred
 	 */
-	Error doSemanticAnalysis();
+	Error doSemanticAnalysis() override;
 
 	/**
 	 * genCode generates intermediate low level code for the program
@@ -80,7 +87,7 @@ private:
 	
 	Scope mProgramScope;
 
-	const Declaration UINT8;
+	Declaration UINT8;
 
 /*
 	// code contains the intermediate low level code for all the functions in the program

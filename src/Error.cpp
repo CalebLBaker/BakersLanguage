@@ -71,3 +71,39 @@ std::string Error::toString() const {
 	}
 }
 
+
+void Error::print(FILE *pOut) const {
+	fputs(toString().c_str(), pOut);
+	std::string line = location.getLine();
+	size_t index = 0;
+	for (std::string::iterator iter = line.begin(); iter != line.end(); iter++, index++) {
+		unsigned char ch = *iter;
+		if (ch == '\t') {
+			int toPrint = (int)(4 - (index & 3));
+			index += toPrint;
+			for (int i = 0; i < toPrint; i++) {
+				fputc(' ', pOut);
+			}
+		}
+		else {
+			fputc(ch, pOut);
+			if (ch >= 0xC0) {
+				iter++;
+				fputc(*iter, pOut);
+				if (ch >= 0xE0) {
+					iter++;
+					fputc(*iter, pOut);
+					if (ch >= 0xF0) {
+						iter++;
+						fputc(*iter, pOut);
+					}
+				}
+			}
+		}
+	}
+	for (size_t i = 1; i < location.column_number; i++) {
+		fputc(' ', pOut);
+	}
+	fputs("^\n", pOut);
+}
+

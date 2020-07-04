@@ -25,7 +25,8 @@ public:
 		NON_TYPE_EXPRESSION,
 		IO_ERROR,
 		BAD_INITIALIZER,
-		NOT_YET_IMPLEMENTED
+		NOT_YET_IMPLEMENTED,
+		NON_FUNCTION_ENTRY
 	};
 
 	// type indicates what type of error it is
@@ -69,6 +70,8 @@ public:
 	 * returns: the error message as a string
 	 */
 	std::string toString() const;
+
+	void print(FILE *pOut) const;
 
 };
 

@@ -14,7 +14,7 @@ const Type* FunctionType::moveToHeap() {
 
 
 size_t FunctionType::hash() const {
-	return TC_FUNCTION;
+	return FUNCTION_MASK;
 }
 
 

@@ -3,12 +3,13 @@ cmake_minimum_required(VERSION 3.4.3)
 cmake_policy(SET CMP0048 NEW)
 
 project(Quartz VERSION 1.0)
-
-find_package(LLVM REQUIRED CONFIG)
+ 
+find_package(LLVM 10 EXACT REQUIRED CONFIG)
 
 include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
-
+set(LLVM_ENABLE_PROJECTS "lld")
+ 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Werror)
@@ -24,7 +25,7 @@ add_library(quartzlib
 	src/ast/ExpressionStatement.h
 	src/ast/FunctionType.h
 	src/ast/FunctionTypeExpression.h
-	src/ast/Initializer.h
+	src/ast/IntegerLiteral.h
 	src/ast/Module.h
 	src/ast/ParameterList.h
 	src/ast/Primitive.h
@@ -49,7 +50,7 @@ add_library(quartzlib
 	src/ast/ExpressionStatement.cpp
 	src/ast/FunctionType.cpp
 	src/ast/FunctionTypeExpression.cpp
-	src/ast/Initializer.cpp
+	src/ast/IntegerLiteral.cpp
 	src/ast/Module.cpp
 	src/ast/ParameterList.cpp
 	src/ast/Primitive.cpp

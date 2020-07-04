@@ -18,7 +18,7 @@ public:
 	virtual const Type* getTypeValue() = 0;
 	const Type* getType() const;
 	static bool inFirstSet(Token::TokenType type) {
-		return type == Token::FUNC || type == Token::IDENTIFIER;
+		return type == Token::FUNC || type == Token::IDENTIFIER || type == Token::INTEGER;
 	}
 protected:
 	const Type *mpType;

@@ -15,7 +15,7 @@ namespace CodeGen {
 		EXECUTABLE
 	};
 
-	void newFunction(std::string_view name);
+	void newFunction(std::string_view name, bool entryPoint);
 
 	inline void setModuleName(std::string_view name) {
 		codeModule.setModuleIdentifier(llvm::StringRef(name.data(), name.size()));

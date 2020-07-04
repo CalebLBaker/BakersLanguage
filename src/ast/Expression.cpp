@@ -1,6 +1,7 @@
 #include "Expression.h"
 
 #include "FunctionTypeExpression.h"
+#include "IntegerLiteral.h"
 #include "VariableExpression.h"
 
 
@@ -13,6 +14,10 @@ Error Expression::NewExpression(Scanner *pScanner, Scope *pScope, std::unique_pt
 		}
 		case Token::FUNC: {
 			pOut->reset(new FunctionTypeExpression(pScope));
+			break;
+		}
+		case Token::INTEGER: {
+			pOut->reset(new IntegerLiteral(pScope));
 			break;
 		}
 		default: {

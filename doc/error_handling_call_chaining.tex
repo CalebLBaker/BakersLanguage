@@ -1,0 +1,141 @@
+\documentclass{article}
+
+\usepackage[margin={1in,1in}]{geometry}
+\usepackage{listings}
+
+\begin{document}
+
+	\section{A Working Example}
+
+	Suppose you have an ASCII text file that contains space-delimited numbers.
+	You want a function that, given the file name, will calculate the sum of the numbers in the
+	file.
+	Specifically, the function should return an \verb|Optional(float)| with a value of
+	\verb|Optional:None| if the file can't be opened, a value of \verb|NaN| if one of the fields
+	in the file cannot be parsed as a number, and the sum of the numbers if there were no errors.
+
+	Without the operators described in this document, such a function would look like the
+	following.
+
+	\begin{lstlisting}
+func(`string name) -> Optional(float) fileSum {
+	Optional(FileReader) in = openInputFile(name);
+	if (!hasValue(in)) {
+		return Optional:None;
+	}
+	sum(toNumbers(*in))
+}
+	\end{lstlisting}
+
+	\section{Argument Forwarding}
+
+	The Argument forwarding (\verb|.|) operator is mostly used as syntactic sugar to create a
+	function calling syntax that is familiar to traditional object-oriented programming (e.g.
+	\verb|objectWithMethod.methodOfObject()|.
+	This operator takes an expression as its left parameter and function call that is missing the
+	first argument as the right parameter.
+	The expression on the left is evaluated and then passed in to the function call on the right as
+	the missing first argument.
+
+	This operator has a little bit of a magic feel to it because it tries a few different ways of
+	doing things to find one that compiles.
+	It searches for a function with a matching signature not only in the current scope, but also in
+	the scope that the type of the left had expression was declared in.
+	Because interface implementation import associated functions into the implementing types scope,
+	this peculiarity allows access to functions closely related to the object type as well as
+	functions related to interfaces that the type implements.
+
+	Additionally, the operator can manipulate the left had expression a bit if it finds a function
+	with a signature that almost matches.
+	If the expression is dereferencable, then the compiler might dereference it in order to match
+	the function signature.
+	Alternative, if the function expects a pointer, then the compiler might try taking the address
+	of the expression in order to get the function signature to work.
+
+	Multiple uses of the argument forwarding operator can create a special kind of expression
+	called a call chain.
+	A call chain looks like this:
+
+	\verb|myFileReaderPtr.words().apply(toFloat).sum()|
+
+	This example results in a number of type \verb|float| by turning a file into a range of
+	words, transforming those words into numbers, and then adding those numbers together.
+	This is much more expressive than trying to do the same thing without the argument forwarding
+	operator:
+
+	\verb|sum(apply(words(*myFileReaderPtr), toFloat))|
+
+	\subsection{Our Example}
+
+	Here is our example modified to utilize the argument forwarding operator:
+
+	\begin{lstlisting}
+func(`string name) -> Optional(float) fileSum {
+	Optional(FileReader) in = openInputFile(name);
+	if (!in.hasValue()) {
+		return Optional:None;
+	}
+	in.toNumbers().sum()
+}
+	\end{lstlisting}
+
+	\section{Try}
+
+	The try (\verb|?|) operator is used as syntactic sugar to get more terse error handling.
+	It follows an expression that is of a type which can represent errors.
+	If the expression evaluates to an error value, then that value is immediately returned out of
+	the current function.
+	Otherwise, the operator has no effect.
+
+	\subsection{Our Example}
+
+	Here is our example modified to utilize the try operator.
+
+	\begin{lstlisting}
+func(`string name) -> Optional(float) fileSum {
+	// Using parentheses to prevent ?. from being lexed as a single token
+	(openInputFile(name)?).toNumbers().sum()
+}
+	\end{lstlisting}
+
+	\section{Short Circuit Argument Forwarding Operator}
+
+	The short-circuit argument forwarding operator (\verb|?.|) operator is the logical combination
+	of the argument forwarding and try operators with the exception that it doesn't return out of
+	the current function like the try operator does.
+	Instead, the \verb|?.| operator is meant to be used in a call chain and it causes the type of
+	the call chain to be wrapped in an \verb|Optional|.
+	The expression to the left of the operator must implement the \verb|maybe| interface (the most
+	common implementations of this interface are \verb|Optional| and pointers).
+	If the expression evaluates to an empty value (i.e. \verb|Optional:None| or \verb|NULL|), then
+	the rest of the call chain is skipped (i.e. the call chain is short-circuited) and the
+	expression evaluates to \verb|Optional:None|.
+	Otherwise, the call chain is evaluated like normal.
+
+	\subsection{Our Example}
+
+	Here is our example modified to utilize the short circuit argument forwarding operator:
+
+	\begin{lstlisting}
+func(`string name) -> Optional(float) fileSum {
+	openInputFile(name)?.toNumbers().sum()
+}
+	\end{lstlisting}
+
+	\section{Library Functions referenced in This Document}
+
+	\begin{lstlisting}
+
+func(`string name) -> Optional(FileReader) openInputFile {
+	FileReader(fopen(name + '\0', "r\0"))
+}
+
+func(`Optional(T @ Any) opt) -> bool hasValue = opt:hasValue;
+
+func(`R @ Range(V @ Summable, DefaultInit) vals) -> V sum = vals.fold(V(), add);
+
+func(`R @ Range(byte)) -> 
+
+	\end{lstlisting}
+
+\end{document}

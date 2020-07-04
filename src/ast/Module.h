@@ -25,6 +25,7 @@ public:
 private:
 
 	std::vector<std::unique_ptr<Declaration>> mDeclarations;
+	std::vector<Declaration*> entryPoints;
 	Scope mScope;
 
 };

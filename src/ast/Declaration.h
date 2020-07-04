@@ -6,7 +6,7 @@
 
 #include "Error.h"
 #include "Expression.h"
-#include "Initializer.h"
+#include "Scope.h"
 #include "Statement.h"
 #include "scan/Scanner.h"
 
@@ -16,15 +16,29 @@ public:
 
 	Declaration(Scope *pScope);
 
+	Declaration(std::string_view name, Scope *pScope) :
+		Statement(pScope), mName(name), mpType(Type::TYPE), entryPoint(false)
+	{
+		pScope->addVariable(this);
+	}
+
 	inline Declaration(std::unique_ptr<Expression>&& pType) :
-		Statement(pType->scope), mpTypeExpression(std::move(pType)), mpType(nullptr),
-		mpValue(nullptr)
+		Statement(pType->scope),
+		mpType(nullptr),
+		mpValue(nullptr),
+		mpTypeExpression(std::move(pType)),
+		mInitiailizerType(NONE),
+		entryPoint(false)
 	{}
 
 	inline Declaration(std::string_view name, const Type *pValue, Scope *pScope) :
-		Statement(pScope), mName(name), mpType(Type::TYPE), mpValue(pValue)
+		Declaration(name, pScope)
 	{
-		pScope->addVariable(this);
+		mpValue = pValue;
+	}
+
+	constexpr void setTypeValue(const Type *pValue) {
+		mpValue = pValue;
 	}
 
 	Error parse(Scanner *pScanner);
@@ -49,11 +63,18 @@ public:
 	Error genCode();
 
 private:
-	std::unique_ptr<Expression> mpTypeExpression;
+	enum InitializerType {
+		NONE,
+		EXPRESSION,
+		STATEMENT
+	};
 	std::string mName;
 	const Type *mpType;
 	const Type *mpValue;
-	std::unique_ptr<Initializer> mpInitializer;
+	std::unique_ptr<Expression> mpTypeExpression;
+	InitializerType mInitiailizerType;
+	std::unique_ptr<SyntaxNode> mpInitializer;
+	bool entryPoint;
 };
 
 

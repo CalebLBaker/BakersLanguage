@@ -2,6 +2,7 @@
 #define SYNTAX_NODE
 
 #include "Location.h"
+#include "scan/Scanner.h"
 
 
 class Scope;
@@ -20,6 +21,9 @@ public:
 
 	// Move constructor
 	SyntaxNode(SyntaxNode&& old);
+
+	virtual Error parse(Scanner *pScanner);
+	virtual Error doSemanticAnalysis() = 0;
 
 	Scope *scope;
 

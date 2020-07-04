@@ -7,11 +7,15 @@ const Type* Primitive::moveToHeap() {
 
 
 size_t Primitive::hash() const {
-	return TC_DATA;
+	return PRIMITIVE_MASK | mMask | (mSize << 3);
 }
 
 
 bool Primitive::equal(const Type& rhs) const {
-	return rhs.getCategory() == TC_DATA;
+	if (rhs.getCategory() != TC_DATA) {
+		return false;
+	}
+	const Primitive *pRhs = (const Primitive*)&rhs;
+	return pRhs->mMask == mMask && pRhs->mSize == mSize;
 }
 

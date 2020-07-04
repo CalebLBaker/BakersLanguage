@@ -1,0 +1,178 @@
+// The compiler provides bool, a boolean primitive
+// The compiler provides sintN and uintN integer primitives for N = {8, 16, 32, 64, and 128}
+
+alias int64 = sint64;
+alias int = int64;
+
+interface ComparableWith(Other : Any) {
+	func(`Self, `Other) -> bool equal;
+	func(`Self this, `Other rhs) -> bool notEqual = !equal(this, rhs);
+	// This interface provides the == and != operators for Self and Other
+};
+
+interface Comparable {
+	func(`Self, `Self) -> bool equal;
+}
+
+impl ComparableWith(Self) for Comparable;
+
+interface WeaklyOrderedWith(Other: Any) {
+	func(`Self, `Other) -> bool less;
+	func(`Other lhs, `Self rhs) -> bool greater = less(rhs, lhs);
+	// This interface provides the < operator for Self and Other
+	// This interface provides the > operator for Other and Self
+};
+
+interface OrderedWith(Other : WeaklyOrderedWith(Self)) : WeaklyOrderedWith(Other) {
+	func(`Self this, `Other rhs) -> bool lessEqual = !(this > rhs);
+	func(`Self this, `Other rhs) -> bool greaterEqual = !(this < rhs);
+	// This interface provides the <= and >= operators for Self and Other
+};
+
+impl ComparableWith(Other) for OrderedWith(Other : Any) {
+	func(`Self this, `Other rhs) -> bool equal = !(this < rhs || rhs < this);
+};
+
+interface WeaklyOrdered {
+	func(`Self, `Self) -> bool less;
+};
+
+impl WeaklyOrderedWith(Self) for WeaklyOrdered;
+
+interface Ordered : WeaklyOrdered;
+
+impl OrderedWith(Self) for Ordered;
+
+interface Incrementable {
+	func(&Self) increment;
+	// This interface provides the ++ operator
+};
+
+interface Decrementable {
+	func(&Self) decrement;
+	// This interface provides the -- operator
+};
+
+interface AddableWith(Other : Any) {
+	Type Sum;
+	func(`Self, `Other) -> Sum add;
+	// This interface provides the + operator for Self and Other
+};
+
+interface SummableWith(Other : Any) {
+	func(`Self, `Other) -> Self add;
+	func(&Self this, `Other rhs) addInto { *this = add(*this, rhs); }
+	// This interface provides the += operator for Self and Other
+};
+
+impl AddableWith(Other) for SummableWith(Other : Any) {
+	Type Sum = Self;
+};
+
+interface SubtractableWith(Other : Any) {
+	Type Difference;
+	func(`Self, `Other) -> Difference subtract;
+	// This interface provides the - operator for Self and Other
+};
+
+interface CumulativeSubtractableWith(Other : Any) {
+	func(`Self, `Other) -> Self subtract;
+	func(&Self this, `Other rhs) subtractInto { *this = subtract(*this, rhs); }
+	// This interface provides the -= operator for Self and Other
+};
+
+impl SubtractableWith(Other) for CumulativeSubtractableWith(Other : Any) {
+	Type Difference = Self;
+};
+
+interface Subtractable {
+	Type Difference;
+	func(`Self, `Self) -> Difference subtract;
+};
+
+impl SubtractableWith(Self) for Subtractable;
+
+impl Incrementable for SummableWith(int) {
+	func(&Self this) increment { *this += 1; }
+};
+
+impl Decrementable for CumulativeSubtractableWith(int) {
+	func(&Self this) decrement { *this -= 1; }
+};
+
+interface ValueWrapper(Value : Any) {
+	func(`Self) -> Value get;
+	// This interface provides the unary * operator
+};
+
+interface Reference(Value : Any) {
+	func(`Self) -> &Value toPointer();
+	// This interface provides an implementation of the unary * operator that takes precedence over
+	// the implementation provided by ValueWrapper
+};
+
+impl ValueWrapper(Value) for Reference(Value : Any) {
+	func(`Self this) -> Value get = *this.toPointer();
+};
+
+interface ReadIndexableBy(Idx : Any, Wrapper : ValueWrapper(Value : Any)) {
+	func(`Self, `Idx) -> Wrapper at;
+	// This interface provides an implementation of the [] operator for Self and Idx
+};
+
+interface ReadIndexable(Wrapper : ValueWrapper(Value : Any)) : ReadIndexableBy(int, Wrapper);
+
+interface IndexableBy(Idx : Any, Wrapper : Reference(Value : Any)) {
+	func(`Self, `Idx) -> Wrapper at;
+	// This interface provides an implementation of the [] operator for Self and Idx that takes
+	// precedence over the implementation provided by ReadIndexableBy
+}
+
+impl ReadIndexableBy(Idx, Wrapper) for IndexableBy(;
+
+impl ReadIndexable for IndexableBy(int);
+
+interface Indexable : IndexableBy(int);
+
+interface InputIterator {
+	Type Value;
+	func(&Self) -> Value getNext();
+};
+
+interface OutputIterator {
+	Type Value;
+	func(&Self, Value) putNext();
+};
+
+interface StableIterator : Incrementable, ValueWrapper;
+
+impl InputIterator for StableIterator {
+	func(&Self this) -> Value getNext = *(*this)++;
+};
+
+interface StableOutIterator : StableIterator, Reference;
+
+impl OutputIterator for StableOutIterator {
+	func(&Self this, Value val) putNext { *(*this)++ = val.move();
+};
+
+interface BidirectionalIterator : StableIterator, Decrementable;
+
+interface BidirectionalOutIterator : BidirectionalIterator, StableOutIterator;
+
+interface RandomAccessIterator : BidirectionalIterator, SummableWith(int), CumulativeSubtractableWith(int), Subtractable;
+
+impl ReadIndexable for RandomAccessIterator {
+	Type Wrapper = Self;
+	func(`Self this, int index) -> Self = this + index;
+};
+
+interface RandomAccessOutIterator : RandomAccessIterator, BidirectionalOutIterator;
+
+interface Range {
+	Type Iterator : InputIterator;
+	alias Value = Iterator:Value;
+	func(`Self) -> Iterator begin;
+	func(`Self) -> Iterator end;
+};
+

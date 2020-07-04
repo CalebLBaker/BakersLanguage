@@ -9,3 +9,11 @@ Release
 
 .notes
 
+*.aux
+*.log
+*.pdf
+
+.clangd
+
+compile_commands.json
+

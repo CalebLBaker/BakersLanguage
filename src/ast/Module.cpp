@@ -6,6 +6,13 @@ Error Module::parse(Scanner *pScanner) {
 	Token *pNextToken = &pScanner->next_token;
 	for (auto type = pNextToken->type; type != Token::END_OF_FILE; type = pScanner->next_token.type) {
 		switch (type) {
+			case Token::ENTRY: {
+				Declaration *decl = new Declaration(&mScope);
+				mDeclarations.emplace_back(decl);
+				entryPoints.emplace_back(decl);
+				TRY(decl->parse(pScanner));
+				break;
+			}
 			case Token::FUNC: {
 				Declaration *pDecl = new Declaration(&mScope);
 				mDeclarations.emplace_back(pDecl);

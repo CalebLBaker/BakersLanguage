@@ -7,12 +7,18 @@
 
 class Primitive : public Type {
 public:
-	inline Primitive() : Type(TC_DATA) {}
-	inline Primitive(Primitive&& old) : Type(std::move(old)) {}
+	const static size_t UNSIGNED = 0;
+	const static size_t SIGNED = 4;
+	typedef size_t PrimitiveType;
+	inline Primitive(PrimitiveType type, size_t size) : Type(TC_DATA), mMask(type), mSize(size) {}
+	inline Primitive(Primitive&& old) : Type(std::move(old)), mMask(old.mMask), mSize(old.mSize) {}
 protected:
 	virtual const Type* moveToHeap();
 	virtual size_t hash() const;
 	virtual bool equal(const Type& rhs) const;
+private:
+	PrimitiveType mMask;
+	size_t mSize;
 };
 
 
